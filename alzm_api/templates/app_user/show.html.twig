@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AppUser{% endblock %}
+
+{% block body %}
+    <h1>AppUser</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>IdUser</th>
+                <td>{{ app_user.idUser }}</td>
+            </tr>
+            <tr>
+                <th>Lastname</th>
+                <td>{{ app_user.lastname }}</td>
+            </tr>
+            <tr>
+                <th>Firstname</th>
+                <td>{{ app_user.firstname }}</td>
+            </tr>
+            <tr>
+                <th>Datebirth</th>
+                <td>{{ app_user.datebirth ? app_user.datebirth|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ app_user.email }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ app_user.password }}</td>
+            </tr>
+            <tr>
+                <th>AccessToken</th>
+                <td>{{ app_user.accessToken }}</td>
+            </tr>
+            <tr>
+                <th>DateRegistration</th>
+                <td>{{ app_user.dateRegistration ? app_user.dateRegistration|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>{{ app_user.roles ? app_user.roles|json_encode : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_index') }}">back to list</a>
+
+    <a href="{{ path('app_user_edit', {'idUser': app_user.idUser}) }}">edit</a>
+
+    {{ include('app_user/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,19 @@
+version: '3.8'
+
+###> doctrine/doctrine-bundle ###
+# services:
+#   database:
+#     ports:
+#       - "5433:5433"  # Port 5433 de l'hôte se connecte au port 5432 du conteneur
+#     networks:
+#       - dev  # Assurez-vous que le service "database" est dans le même réseau que dans docker-compose.yml
+
+###< doctrine/doctrine-bundle ###
+
+###> symfony/mailer ###
+  # mailer:
+  #   image: schickling/mailcatcher
+  #   ports: ["1025", "1080"]
+  #   networks:
+  #     - dev  
+###< symfony/mailer ###

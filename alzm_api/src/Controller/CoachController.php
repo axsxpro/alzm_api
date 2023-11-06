@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class CoachController extends AbstractController
 {
 
-    #[Route('/coach/all', name: 'app_all_coach')]
+    #[Route('/coachs', name: 'app_all_coach')]
     public function allCoach(CoachRepository $coachRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
@@ -30,7 +30,7 @@ class CoachController extends AbstractController
 
 
     //utilisation du ParamConverter
-    #[Route('/coach/all/{id}', name: 'patient_id', methods: ['GET'])]
+    #[Route('/coachs/{id}', name: 'patient_id', methods: ['GET'])]
     public function getallPatients(Coach $coach, SerializerInterface $serializer): JsonResponse
     {
         $coachById = $serializer->serialize($coach, 'json', ['groups' => 'coach']);

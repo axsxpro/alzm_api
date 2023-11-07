@@ -1,0 +1,3 @@
+<?php //Doctrine%255CORM%255CAbstractQuery%2523setResultCache
+
+return [PHP_INT_MAX, []];

@@ -6800,11 +6800,46 @@
         <argument key="serializerInterface" type="service_closure" id="serializer"/>
       </argument>
     </service>
+    <service id=".service_locator.0G9cN2b" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="coachRepository" type="service_closure" id="App\Repository\CoachRepository"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="patientRepository" type="service_closure" id="App\Repository\PatientRepository"/>
+        <argument key="scheduleRepository" type="service_closure" id="App\Repository\ScheduleRepository"/>
+        <argument key="serializer" type="service_closure" id="serializer"/>
+      </argument>
+    </service>
+    <service id=".service_locator.Ai6hlnu" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="appointment" type="service_closure" id="App\Entity\Appointment"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
     <service id=".service_locator.sa2NCO6" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="availabilityRepository" type="service_closure" id="App\Repository\AvailabilityRepository"/>
         <argument key="serializerInterface" type="service_closure" id="serializer"/>
+      </argument>
+    </service>
+    <service id=".service_locator.xQRnlgm" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="coachRepository" type="service_closure" id="App\Repository\CoachRepository"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="serializer" type="service_closure" id="serializer"/>
+      </argument>
+    </service>
+    <service id=".service_locator.VLrXPRh" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="availability" type="service_closure" id="App\Entity\Availability"/>
+        <argument key="availabilityRepository" type="service_closure" id="App\Repository\AvailabilityRepository"/>
+        <argument key="coachRepository" type="service_closure" id="App\Repository\CoachRepository"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="serializer" type="service_closure" id="serializer"/>
       </argument>
     </service>
     <service id=".service_locator.NWz6gvW" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -6891,6 +6926,23 @@
         <argument key="serializer" type="service_closure" id="serializer"/>
       </argument>
     </service>
+    <service id=".service_locator.MpaYdub" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="serializer" type="service_closure" id="serializer"/>
+        <argument key="userPasswordHasherInterface" type="service_closure" id="security.user_password_hasher"/>
+      </argument>
+    </service>
+    <service id=".service_locator.h5Zosne" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="appUser" type="service_closure" id="App\Entity\AppUser"/>
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="serializer" type="service_closure" id="serializer"/>
+        <argument key="userPasswordHasherInterface" type="service_closure" id="security.user_password_hasher"/>
+      </argument>
+    </service>
     <service id=".service_locator.bRtUlSQ" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -6913,28 +6965,19 @@
         <argument key="transactionRepository" type="service_closure" id="App\Repository\TransactionRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.3ddjjAN" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="appUser" type="service_closure" id="App\Entity\AppUser"/>
-        <argument key="appointmentRepository" type="service_closure" id="App\Repository\AppointmentRepository"/>
-        <argument key="availabilityRepository" type="service_closure" id="App\Repository\AvailabilityRepository"/>
-        <argument key="coach" type="service_closure" id="App\Entity\Coach"/>
-        <argument key="coachRepository" type="service_closure" id="App\Repository\CoachRepository"/>
-        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
-        <argument key="patient" type="service_closure" id="App\Entity\Patient"/>
-        <argument key="patientRepository" type="service_closure" id="App\Repository\PatientRepository"/>
-        <argument key="planningRulesRepository" type="service_closure" id="App\Repository\PlanningRulesRepository"/>
-        <argument key="transactionRepository" type="service_closure" id="App\Repository\TransactionRepository"/>
-      </argument>
-    </service>
-    <service id=".service_locator.5taOUKa" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.JFzp5Rr" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\AdminController::allAdmin" type="service_closure" id=".service_locator.fmKhUTq"/>
         <argument key="App\Controller\AdvantagesController::allAdvantages" type="service_closure" id=".service_locator.209vKPp"/>
         <argument key="App\Controller\AppointmentController::allAppointment" type="service_closure" id=".service_locator.k8niE_K"/>
-        <argument key="App\Controller\AvailabilityController::allAdvantages" type="service_closure" id=".service_locator.sa2NCO6"/>
+        <argument key="App\Controller\AppointmentController::appointmentByCoachId" type="service_closure" id=".service_locator.k8niE_K"/>
+        <argument key="App\Controller\AppointmentController::createUsers" type="service_closure" id=".service_locator.0G9cN2b"/>
+        <argument key="App\Controller\AppointmentController::deleteAppointment" type="service_closure" id=".service_locator.Ai6hlnu"/>
+        <argument key="App\Controller\AvailabilityController::allAvailabilities" type="service_closure" id=".service_locator.sa2NCO6"/>
+        <argument key="App\Controller\AvailabilityController::availabilitiesByCoachId" type="service_closure" id=".service_locator.sa2NCO6"/>
+        <argument key="App\Controller\AvailabilityController::createUsers" type="service_closure" id=".service_locator.xQRnlgm"/>
+        <argument key="App\Controller\AvailabilityController::updateAvailabilities" type="service_closure" id=".service_locator.VLrXPRh"/>
         <argument key="App\Controller\CoachController::allCoach" type="service_closure" id=".service_locator.NWz6gvW"/>
         <argument key="App\Controller\CoachController::getallPatients" type="service_closure" id=".service_locator.54rra3g"/>
         <argument key="App\Controller\CourseController::allCourse" type="service_closure" id=".service_locator.J2Qh6MH"/>
@@ -6944,12 +6987,13 @@
         <argument key="App\Controller\PlanningRulesController::allPlan" type="service_closure" id=".service_locator.XWu.50g"/>
         <argument key="App\Controller\PlanningRulesController::getPlanningById" type="service_closure" id=".service_locator.3YgwsAp"/>
         <argument key="App\Controller\TransactionController::allTransaction" type="service_closure" id=".service_locator.v57OW1I"/>
-        <argument key="App\Controller\UsersController::allUser" type="service_closure" id=".service_locator.5AgJos5"/>
+        <argument key="App\Controller\UsersController::createUsers" type="service_closure" id=".service_locator.MpaYdub"/>
         <argument key="App\Controller\UsersController::deleteCoach" type="service_closure" id=".service_locator.bRtUlSQ"/>
         <argument key="App\Controller\UsersController::deletePatient" type="service_closure" id=".service_locator.lDNiEmG"/>
-        <argument key="App\Controller\UsersController::deleteUser" type="service_closure" id=".service_locator.3ddjjAN"/>
         <argument key="App\Controller\UsersController::getRoleById" type="service_closure" id=".service_locator.wYIawp6"/>
         <argument key="App\Controller\UsersController::getUserById" type="service_closure" id=".service_locator.E2DLjxp"/>
+        <argument key="App\Controller\UsersController::getUsers" type="service_closure" id=".service_locator.5AgJos5"/>
+        <argument key="App\Controller\UsersController::updateUsers" type="service_closure" id=".service_locator.h5Zosne"/>
         <argument key="App\Kernel::loadRoutes" type="service_closure" id=".service_locator.xUrKPVU"/>
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.xUrKPVU"/>
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.xUrKPVU"/>
@@ -6957,7 +7001,13 @@
         <argument key="App\Controller\AdminController:allAdmin" type="service_closure" id=".service_locator.fmKhUTq"/>
         <argument key="App\Controller\AdvantagesController:allAdvantages" type="service_closure" id=".service_locator.209vKPp"/>
         <argument key="App\Controller\AppointmentController:allAppointment" type="service_closure" id=".service_locator.k8niE_K"/>
-        <argument key="App\Controller\AvailabilityController:allAdvantages" type="service_closure" id=".service_locator.sa2NCO6"/>
+        <argument key="App\Controller\AppointmentController:appointmentByCoachId" type="service_closure" id=".service_locator.k8niE_K"/>
+        <argument key="App\Controller\AppointmentController:createUsers" type="service_closure" id=".service_locator.0G9cN2b"/>
+        <argument key="App\Controller\AppointmentController:deleteAppointment" type="service_closure" id=".service_locator.Ai6hlnu"/>
+        <argument key="App\Controller\AvailabilityController:allAvailabilities" type="service_closure" id=".service_locator.sa2NCO6"/>
+        <argument key="App\Controller\AvailabilityController:availabilitiesByCoachId" type="service_closure" id=".service_locator.sa2NCO6"/>
+        <argument key="App\Controller\AvailabilityController:createUsers" type="service_closure" id=".service_locator.xQRnlgm"/>
+        <argument key="App\Controller\AvailabilityController:updateAvailabilities" type="service_closure" id=".service_locator.VLrXPRh"/>
         <argument key="App\Controller\CoachController:allCoach" type="service_closure" id=".service_locator.NWz6gvW"/>
         <argument key="App\Controller\CoachController:getallPatients" type="service_closure" id=".service_locator.54rra3g"/>
         <argument key="App\Controller\CourseController:allCourse" type="service_closure" id=".service_locator.J2Qh6MH"/>
@@ -6967,12 +7017,13 @@
         <argument key="App\Controller\PlanningRulesController:allPlan" type="service_closure" id=".service_locator.XWu.50g"/>
         <argument key="App\Controller\PlanningRulesController:getPlanningById" type="service_closure" id=".service_locator.3YgwsAp"/>
         <argument key="App\Controller\TransactionController:allTransaction" type="service_closure" id=".service_locator.v57OW1I"/>
-        <argument key="App\Controller\UsersController:allUser" type="service_closure" id=".service_locator.5AgJos5"/>
+        <argument key="App\Controller\UsersController:createUsers" type="service_closure" id=".service_locator.MpaYdub"/>
         <argument key="App\Controller\UsersController:deleteCoach" type="service_closure" id=".service_locator.bRtUlSQ"/>
         <argument key="App\Controller\UsersController:deletePatient" type="service_closure" id=".service_locator.lDNiEmG"/>
-        <argument key="App\Controller\UsersController:deleteUser" type="service_closure" id=".service_locator.3ddjjAN"/>
         <argument key="App\Controller\UsersController:getRoleById" type="service_closure" id=".service_locator.wYIawp6"/>
         <argument key="App\Controller\UsersController:getUserById" type="service_closure" id=".service_locator.E2DLjxp"/>
+        <argument key="App\Controller\UsersController:getUsers" type="service_closure" id=".service_locator.5AgJos5"/>
+        <argument key="App\Controller\UsersController:updateUsers" type="service_closure" id=".service_locator.h5Zosne"/>
         <argument key="kernel:loadRoutes" type="service_closure" id=".service_locator.xUrKPVU"/>
         <argument key="kernel:registerContainerConfiguration" type="service_closure" id=".service_locator.xUrKPVU"/>
       </argument>
@@ -7665,12 +7716,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.5taOUKa"/>
+      <argument type="service" id=".service_locator.JFzp5Rr"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.5taOUKa"/>
+      <argument type="service" id=".service_locator.JFzp5Rr"/>
     </service>
     <service id="debug.traced.messenger.bus.default.inner" class="Symfony\Component\Messenger\MessageBus">
       <argument type="iterator">
@@ -8645,7 +8696,7 @@
     <service id="sensio_framework_extra.security.expression_language" alias="sensio_framework_extra.security.expression_language.default"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.5taOUKa"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.JFzp5Rr"/>
     <service id="session" alias=".session.do-not-use" public="true">
       <deprecated package="symfony/framework-bundle" version="5.3">The "%alias_id%" service and "SessionInterface" alias are deprecated, use "$requestStack-&gt;getSession()" instead.</deprecated>
     </service>
@@ -8669,11 +8720,15 @@
     <service id=".service_locator.80edgLI" alias="messenger.receiver_locator"/>
     <service id=".service_locator.h8Jkkd2" alias="messenger.retry_strategy_locator"/>
     <service id=".service_locator.0GV1BZZ" alias=".service_locator.gSv9zYw"/>
+    <service id=".service_locator.BEqyxWt" alias=".service_locator.0G9cN2b"/>
+    <service id=".service_locator.XMkuaK_" alias=".service_locator.xQRnlgm"/>
+    <service id=".service_locator.CEogbVh" alias=".service_locator.VLrXPRh"/>
     <service id=".service_locator.LGqQIlW" alias=".service_locator.v57OW1I"/>
+    <service id=".service_locator.tpGiab9" alias=".service_locator.MpaYdub"/>
+    <service id=".service_locator.ynDkjdJ" alias=".service_locator.h5Zosne"/>
     <service id=".service_locator.RXX9kmo" alias=".service_locator.bRtUlSQ"/>
     <service id=".service_locator._77Ne.S" alias=".service_locator.lDNiEmG"/>
-    <service id=".service_locator.sgjpziv" alias=".service_locator.3ddjjAN"/>
-    <service id=".service_locator.GE9Hf7h" alias=".service_locator.5taOUKa"/>
+    <service id=".service_locator.nRFcqBv" alias=".service_locator.JFzp5Rr"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
     <service id=".service_locator.6hl676o" alias=".service_locator.OEinDxj"/>
     <service id=".service_locator.nk0lT0X" alias=".service_locator.1kmbKC8"/>
@@ -8704,7 +8759,11 @@
     <service id=".service_locator.mTj_1Rm" alias=".service_locator.fmKhUTq"/>
     <service id=".service_locator..EqfGio" alias=".service_locator.209vKPp"/>
     <service id=".service_locator.0R.lOR9" alias=".service_locator.k8niE_K"/>
+    <service id=".service_locator.j2ZNeCr" alias=".service_locator.0G9cN2b"/>
+    <service id=".service_locator..YKO1QQ" alias=".service_locator.Ai6hlnu"/>
     <service id=".service_locator.lmBTZZ_" alias=".service_locator.sa2NCO6"/>
+    <service id=".service_locator.N9mu0lV" alias=".service_locator.xQRnlgm"/>
+    <service id=".service_locator.E8t.gne" alias=".service_locator.VLrXPRh"/>
     <service id=".service_locator.aU8DQAy" alias=".service_locator.NWz6gvW"/>
     <service id=".service_locator.TarOuEW" alias=".service_locator.54rra3g"/>
     <service id=".service_locator.Eko3lLc" alias=".service_locator.J2Qh6MH"/>
@@ -8717,9 +8776,10 @@
     <service id=".service_locator.jDNz3g2" alias=".service_locator.5AgJos5"/>
     <service id=".service_locator.6JCCGQ6" alias=".service_locator.E2DLjxp"/>
     <service id=".service_locator.v5yO5t3" alias=".service_locator.wYIawp6"/>
+    <service id=".service_locator.PlLduk8" alias=".service_locator.MpaYdub"/>
+    <service id=".service_locator.AzaMY_f" alias=".service_locator.h5Zosne"/>
     <service id=".service_locator.yrhTsDm" alias=".service_locator.bRtUlSQ"/>
     <service id=".service_locator.oGrq7uC" alias=".service_locator.lDNiEmG"/>
-    <service id=".service_locator.wcOtyts" alias=".service_locator.3ddjjAN"/>
     <service id=".service_locator.A740LBW" alias=".service_locator.mx0UMmY"/>
     <service id=".service_locator.L0rFhJm" alias=".service_locator.GVyCdgr"/>
     <service id=".service_locator.pFwChgS" alias=".service_locator.UkE3SaZ"/>

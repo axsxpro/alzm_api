@@ -15,10 +15,19 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class Appointment
 {
     /**
-     * @var \Coach
+     * @var int
      *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\Column(name="id_appointment", type="integer", nullable=false)
+     * @Groups({"appointment"})
+     */
+    private $idAppointment;
+
+    /**
+     * @var \Coach
+     *
      * @ORM\ManyToOne(targetEntity="Coach")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_coach", referencedColumnName="id_user")
@@ -31,8 +40,6 @@ class Appointment
     /**
      * @var \Patient
      *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\ManyToOne(targetEntity="Patient")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_patient", referencedColumnName="id_user")
@@ -45,8 +52,6 @@ class Appointment
     /**
      * @var \Schedule
      *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\ManyToOne(targetEntity="Schedule")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_schedule", referencedColumnName="id_schedule")
@@ -55,6 +60,13 @@ class Appointment
      * @SerializedName("schedule")
      */
     private $idSchedule;
+
+
+    public function getIdAppointment(): ?int
+    {
+        return $this->idAppointment;
+    }
+
 
     public function getIdCoach(): ?Coach
     {
@@ -91,6 +103,4 @@ class Appointment
 
         return $this;
     }
-
-
 }

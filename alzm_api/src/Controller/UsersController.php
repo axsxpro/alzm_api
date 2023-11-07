@@ -120,7 +120,7 @@ class UsersController extends AbstractController
 
 
     #[Route('/put/users/{id}', name: "app_users_put", methods: ['PUT'])]
-    public function updateBook(Request $request, SerializerInterface $serializer, AppUser $appUser, UserPasswordHasherInterface $userPasswordHasherInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function updateUsers(Request $request, SerializerInterface $serializer, AppUser $appUser, UserPasswordHasherInterface $userPasswordHasherInterface, EntityManagerInterface $entityManager): JsonResponse
     {
         // Les données JSON de la requête sont transformées en un objet appUser
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser] :  permet de mettre à jour l'objet $appUser existant avec les nouvelles données.
@@ -147,10 +147,9 @@ class UsersController extends AbstractController
 
 
 
-    #[Route('/users/{id}/delete/coach', name: 'app_user_delete', methods: ['DELETE'])]
+    #[Route('/users/{id}/delete/coach', name: 'app_user_delete_coach', methods: ['DELETE'])]
     public function deleteCoach(int $id, AppUser $appUser, Coach $coach, CoachRepository $coachRepository, AppointmentRepository $appointmentRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): Response
     {
-
         // Supprimez la relation entre PlanningRules et Coach
         $planningRules = $planningRulesRepository->findBy(['idUser' => $id]);
 
@@ -201,11 +200,12 @@ class UsersController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_all_user', [], Response::HTTP_SEE_OTHER);
+        // atention si c'est une redirection alors ce n'est pas un JsonResponse mais une Response que l'on attend 
+        return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER);
     }
 
 
-    #[Route('/users/{id}/delete/patient', name: 'app_user_delete', methods: ['DELETE'])]
+    #[Route('/users/{id}/delete/patient', name: 'app_user_delete_patient', methods: ['DELETE'])]
     public function deletePatient(int $id, AppUser $appUser, PatientRepository $patientRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): Response
     {
 
@@ -251,7 +251,8 @@ class UsersController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_all_user', [], Response::HTTP_SEE_OTHER);
+        // SEE_OTHER = code 200 ok
+        return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER);
     }
 
 
@@ -373,7 +374,7 @@ class UsersController extends AbstractController
 
     //     $entityManager->flush();
 
-    //     return $this->redirectToRoute('app_all_user', [], Response::HTTP_SEE_OTHER);
+    //     return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER);
     // }
 
 

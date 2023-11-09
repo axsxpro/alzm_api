@@ -44,29 +44,30 @@ return [
                     .'|atients/([^/]++)(*:235)'
                     .'|lanningrules/all/([^/]++)(*:268)'
                 .')'
+                .'|/delete/coachs/([^/]++)/availabilities/([^/]++)(*:324)'
                 .'|/users/([^/]++)(?'
-                    .'|(*:295)'
+                    .'|(*:350)'
                     .'|/(?'
-                        .'|roles(*:312)'
+                        .'|roles(*:367)'
                         .'|delete/(?'
-                            .'|coach(*:335)'
-                            .'|patient(*:350)'
+                            .'|coach(*:390)'
+                            .'|patient(*:405)'
                         .')'
                     .')'
                 .')'
                 .'|/_(?'
-                    .'|error/(\\d+)(?:\\.([^/]++))?(*:392)'
-                    .'|wdt/([^/]++)(*:412)'
+                    .'|error/(\\d+)(?:\\.([^/]++))?(*:447)'
+                    .'|wdt/([^/]++)(*:467)'
                     .'|profiler/([^/]++)(?'
                         .'|/(?'
-                            .'|search/results(*:458)'
-                            .'|router(*:472)'
+                            .'|search/results(*:513)'
+                            .'|router(*:527)'
                             .'|exception(?'
-                                .'|(*:492)'
-                                .'|\\.css(*:505)'
+                                .'|(*:547)'
+                                .'|\\.css(*:560)'
                             .')'
                         .')'
-                        .'|(*:515)'
+                        .'|(*:570)'
                     .')'
                 .')'
             .')/?$}sDu',
@@ -76,21 +77,22 @@ return [
         59 => [[['_route' => 'app_coach_availabilities', '_controller' => 'App\\Controller\\AvailabilityController::availabilitiesByCoachId'], ['id'], ['GET' => 0], null, false, false, null]],
         89 => [[['_route' => 'delete_appointment', '_controller' => 'App\\Controller\\AppointmentController::deleteAppointment'], ['id'], ['DELETE' => 0], null, false, true, null]],
         135 => [[['_route' => 'app_availabilities_post', '_controller' => 'App\\Controller\\AvailabilityController::createUsers'], ['id'], ['POST' => 0], null, false, false, null]],
-        188 => [[['_route' => 'app_availabilities_put', '_controller' => 'App\\Controller\\AvailabilityController::updateAvailabilities'], ['id', 'id_availability'], ['PUT' => 0], null, false, true, null]],
+        188 => [[['_route' => 'app_availabilities_put', '_controller' => 'App\\Controller\\AvailabilityController::updateAvailabilities'], ['id', 'idAvailability'], ['PUT' => 0], null, false, true, null]],
         210 => [[['_route' => 'app_users_put', '_controller' => 'App\\Controller\\UsersController::updateUsers'], ['id'], ['PUT' => 0], null, false, true, null]],
         235 => [[['_route' => 'patient_id', '_controller' => 'App\\Controller\\PatientController::getallPatients'], ['id'], ['GET' => 0], null, false, true, null]],
         268 => [[['_route' => 'planning_id', '_controller' => 'App\\Controller\\PlanningRulesController::getPlanningById'], ['idPlanningRules'], ['GET' => 0], null, false, true, null]],
-        295 => [[['_route' => 'users_id', '_controller' => 'App\\Controller\\UsersController::getUserById'], ['id'], ['GET' => 0], null, false, true, null]],
-        312 => [[['_route' => 'users_id_roles', '_controller' => 'App\\Controller\\UsersController::getRoleById'], ['id'], ['GET' => 0], null, false, false, null]],
-        335 => [[['_route' => 'app_user_delete_coach', '_controller' => 'App\\Controller\\UsersController::deleteCoach'], ['id'], ['DELETE' => 0], null, false, false, null]],
-        350 => [[['_route' => 'app_user_delete_patient', '_controller' => 'App\\Controller\\UsersController::deletePatient'], ['id'], ['DELETE' => 0], null, false, false, null]],
-        392 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
-        412 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
-        458 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
-        472 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
-        492 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
-        505 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
-        515 => [
+        324 => [[['_route' => 'delete_availabilities', '_controller' => 'App\\Controller\\AvailabilityController::deleteAvailability'], ['id', 'idAvailability'], ['DELETE' => 0], null, false, true, null]],
+        350 => [[['_route' => 'users_id', '_controller' => 'App\\Controller\\UsersController::getUserById'], ['id'], ['GET' => 0], null, false, true, null]],
+        367 => [[['_route' => 'users_id_roles', '_controller' => 'App\\Controller\\UsersController::getRoleById'], ['id'], ['GET' => 0], null, false, false, null]],
+        390 => [[['_route' => 'app_user_delete_coach', '_controller' => 'App\\Controller\\UsersController::deleteCoach'], ['id'], ['DELETE' => 0], null, false, false, null]],
+        405 => [[['_route' => 'app_user_delete_patient', '_controller' => 'App\\Controller\\UsersController::deletePatient'], ['id'], ['DELETE' => 0], null, false, false, null]],
+        447 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
+        467 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
+        513 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
+        527 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
+        547 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
+        560 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
+        570 => [
             [['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

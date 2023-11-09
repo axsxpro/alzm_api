@@ -21,7 +21,7 @@ class AvailabilityRepository extends ServiceEntityRepository
         parent::__construct($registry, Availability::class);
     }
 
-    // fonction qui récupère le role d'un user en fonction de son id
+    // fonction qui récupère les disponibilités d'un coach en fonction de son ID
     public function findAavailabilitiesByCoachId($id)
     {
         return $this->createQueryBuilder('availability')
@@ -29,7 +29,38 @@ class AvailabilityRepository extends ServiceEntityRepository
             ->where('availability.idUser = :id')
             ->setParameter('id', $id)
             ->getQuery()
-            ->getResult();
+            ->getResult(); //récupérer plusieurs résultats sous forme de tableau.
+    }
+
+    // on supprime une availability en fonction de son id et l'id du coach
+    public function deleteAvailability($id, $idAvailability)
+    {
+        return $this->createQueryBuilder('availability')
+            ->select('availability')
+            ->where('availability.idUser = :id')
+            ->andWhere('availability.idAvailability = :idAvailability')
+            ->setParameters([
+                'id' => $id,
+                'idAvailability' => $idAvailability,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult(); //récupérer un seul résultat d'une requête Doctrine
+    }
+
+
+    // on supprime une availability en fonction de son id et l'id du coach
+    public function findAvailabilityCoachById($id, $idAvailability)
+    {
+        return $this->createQueryBuilder('availability')
+            ->select('availability')
+            ->where('availability.idUser = :id')
+            ->andWhere('availability.idAvailability = :idAvailability')
+            ->setParameters([
+                'id' => $id,
+                'idAvailability' => $idAvailability,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult(); //récupérer un seul résultat d'une requête Doctrine
     }
 
 }

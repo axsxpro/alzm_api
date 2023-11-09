@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class AvailabilityController extends AbstractController
 {
+    // afficher toutes les disponiblités
     #[Route('/availabilities', name: 'app_availabilities')]
     public function allAvailabilities(AvailabilityRepository $availabilityRepository, SerializerInterface $serializerInterface): JsonResponse
     {
@@ -74,24 +75,43 @@ class AvailabilityController extends AbstractController
     }
 
 
-    #[Route('/put/coachs/{id}/availabilities/{id_availability}', name: "app_availabilities_put", methods: ['PUT'])]
-    public function updateAvailabilities(int $id, int $id_availability, Request $request, SerializerInterface $serializer, Availability $availability, CoachRepository $coachRepository, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): JsonResponse
+    // modifier la disponibilité d'un coach
+    #[Route('/put/coachs/{id}/availabilities/{idAvailability}', name: "app_availabilities_put", methods: ['PUT'])]
+    public function updateAvailabilities(int $id, int $idAvailability, Request $request, SerializerInterface $serializer, Availability $availability, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): JsonResponse
     {
+        $availabilityById = $availabilityRepository->findAvailabilityCoachById($id, $idAvailability);
+
         // Les données JSON de la requête sont transformées en un objet appUser
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser] :  permet de mettre à jour l'objet $appUser existant avec les nouvelles données.
-        $updateAvailabilities = $serializer->deserialize($request->getContent(), Availability::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $availability]);
-        
+        $updateAvailability = $serializer->deserialize($request->getContent(), Availability::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $availabilityById]);
+
         // $updateAvailabilities->getIdAvailability($availabilityRepository->find($id_availability));
 
-        $updateAvailabilities->setIdUser($coachRepository->find($id));
+        // $updateAvailability->setIdUser($coachRepository->find($id));
 
-        $entityManager->persist($updateAvailabilities);
+        $entityManager->persist($updateAvailability);
 
         $entityManager->flush();
 
-        $jsonUpdatedAvailabilities = $serializer->serialize($updateAvailabilities, 'json', ['groups' => 'availability']);
+        $jsonUpdatedAvailabilities = $serializer->serialize($updateAvailability, 'json', ['groups' => 'availability']);
 
         // accepted = code 202
         return new JsonResponse($jsonUpdatedAvailabilities, JsonResponse::HTTP_ACCEPTED, [], true);
     }
+
+
+    // Les Coachs suppriment leurs disponibilités 
+    #[Route('delete/coachs/{id}/availabilities/{idAvailability}', name: 'delete_availabilities', methods: ['DELETE'])]
+    public function deleteAvailability(int $id, int $idAvailability, AvailabilityRepository $availabilityRepository,  EntityManagerInterface $entityManager): Response
+    {
+        $availability = $availabilityRepository->deleteAvailability($id, $idAvailability);
+
+        $entityManager->remove($availability);
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_availabilities', [], Response::HTTP_SEE_OTHER, true);
+        // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
 }

@@ -29,19 +29,19 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class UsersController extends AbstractController
 {
-    #[Route('/users', name: 'app_users')]
+    #[Route('/users', name: 'app_users', methods: ['GET'])]
     public function getUsers(AppUserRepository $AppUserRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
         // afficher tous les utilisateurs de la base de données
-        $allUser = $AppUserRepository->findAll();
+        $users = $AppUserRepository->findAll();
 
-        $allUserJson = $serializerInterface->serialize($allUser, 'json');
+        $usersJson = $serializerInterface->serialize($users, 'json');
 
         // le code retour : Response::HTTP_OK :  correspond au code 200
         // [] : les headers (qu’on laisse vides pour l’instant pour garder le comportement par défaut);
         // true : indique que la réponse JSON doit être mise en forme en utilisant la mise en forme JSON "pretty"
-        return new JsonResponse($allUserJson, Response::HTTP_OK, [], true);
+        return new JsonResponse($usersJson, Response::HTTP_OK, [], true);
     }
 
 
@@ -78,6 +78,12 @@ class UsersController extends AbstractController
         // AppUser::class: C'est la classe cible dans laquelle on veut désérialiser les données JSON
         // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
         $users = $serializer->deserialize($request->getContent(), AppUser::class, 'json');
+
+        // récupération de la date 
+        $users->getDateRegistration();
+
+        // mettre la date d'inscription à la date du jour 
+        $users->setDateRegistration(new \DateTime('now'));
 
         // Récupération du mot de passe 
         $password = $users->getPassword();
@@ -122,9 +128,16 @@ class UsersController extends AbstractController
     #[Route('/put/users/{id}', name: "app_users_put", methods: ['PUT'])]
     public function updateUsers(Request $request, SerializerInterface $serializer, AppUser $appUser, UserPasswordHasherInterface $userPasswordHasherInterface, EntityManagerInterface $entityManager): JsonResponse
     {
-        // Les données JSON de la requête sont transformées en un objet appUser
-        // [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser] :  permet de mettre à jour l'objet $appUser existant avec les nouvelles données.
-        $updatedUsers = $serializer->deserialize($request->getContent(), AppUser::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser]);
+        // AppUser::class : C'est la classe PHP vers laquelle les données JSON seront désérialisées. Dans ce cas, c'est la classe AppUser.
+        // [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser] :  permet de mettre à jour l'objet $appUser existant avec les nouvelles données, les données du JSON seront intégrées dans cet objet existant au lieu de créer un nouvel objet
+        // 'ignored_attributes' : ce sont les attribus que l'on ne va pas désérialiser donc non modifiable
+        $updatedUsers = $serializer->deserialize($request->getContent(), AppUser::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth']]);
+
+        // récupération de la date 
+        $updatedUsers->getDateRegistration();
+
+        // mettre la date d'inscription à la date du jour 
+        $updatedUsers->setDateRegistration(new \DateTime('now'));
 
         // Récupération du mot de passe 
         $password = $updatedUsers->getPassword();
@@ -142,19 +155,47 @@ class UsersController extends AbstractController
         $jsonupdatedUsers = $serializer->serialize($updatedUsers, 'json');
 
         // accepted = code 202
-        return new JsonResponse($jsonupdatedUsers, JsonResponse::HTTP_ACCEPTED, [], true );
+        return new JsonResponse($jsonupdatedUsers, JsonResponse::HTTP_ACCEPTED, [], true);
     }
 
 
+    #[Route('/users/{id}/delete', name: 'app_user_delete', methods: ['DELETE'])]
+    public function deleteUser(int $id, AppUser $appUser, CoachRepository $coachRepository, PatientRepository $patientRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): Response 
+    {
+        // récupération du role
+        $userRoles = $appUser->getRoles();
 
-    #[Route('/users/{id}/delete/coach', name: 'app_user_delete_coach', methods: ['DELETE'])]
-    public function deleteCoach(int $id, AppUser $appUser, Coach $coach, CoachRepository $coachRepository, AppointmentRepository $appointmentRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): Response
+        if (in_array("ROLE_COACH", $userRoles)) {
+
+            // apelle de la methode qui va supprimer le coach
+            $this->deleteCoach($id, $coachRepository, $appointmentRepository, $planningRulesRepository, $availabilityRepository, $entityManager);
+            
+
+        } elseif (in_array("ROLE_USER", $userRoles)) {
+
+            // apelle de la methode qui va supprimer le patient
+            $this->deletePatient($id, $patientRepository, $appointmentRepository, $transactionRepository, $entityManager);
+
+        } else {
+
+            return new JsonResponse("The selected id is incorrect", Response::HTTP_BAD_REQUEST);
+        }
+
+        //supression de l'user
+        $entityManager->remove($appUser);
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER, true);
+    }
+
+
+    private function deleteCoach(int $id, CoachRepository $coachRepository, AppointmentRepository $appointmentRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): void 
     {
         // Supprimez la relation entre PlanningRules et Coach
         $planningRules = $planningRulesRepository->findBy(['idUser' => $id]);
 
         foreach ($planningRules as $planningRule) {
-
             $entityManager->remove($planningRule);
         }
 
@@ -162,7 +203,6 @@ class UsersController extends AbstractController
         $availabilities = $availabilityRepository->findBy(['idUser' => $id]);
 
         foreach ($availabilities as $availability) {
-
             $entityManager->remove($availability);
         }
 
@@ -170,50 +210,27 @@ class UsersController extends AbstractController
         $appointments = $appointmentRepository->findBy(['idCoach' => $id]);
 
         foreach ($appointments as $appointment) {
-            // Utilisez des composants de clé primaire séparément
-            $idCoach = $appointment->getIdCoach();
-            $idPatient = $appointment->getIdPatient();
-            $idSchedule = $appointment->getIdSchedule();
+            $entityManager->remove($appointment);
+        }
 
-            // Cherchez et supprimez l'entité Appointment par ses composants de clé primaire
-            $appointmentToDelete = $appointmentRepository->findOneBy([
-                'idCoach' => $idCoach,
-                'idPatient' => $idPatient,
-                'idSchedule' => $idSchedule
-            ]);
+            // suprimer le coach de l'entité coach
+            $coach = $coachRepository->findOneBy(['idUser' => $id]);
 
-            if ($appointmentToDelete) {
-                $entityManager->remove($appointmentToDelete);
+            if ($coach) {
+
+                $entityManager->remove($coach);
             }
-        }
-
-        // suprimer le coach de l'entité coach
-        $coach = $coachRepository->findOneBy(['idUser' => $id]);
-
-        if ($coach) {
-
-            $entityManager->remove($coach);
-        }
-
-        // Supprimer l'utilisateur Coach de l'entité AppUser
-        $entityManager->remove($appUser);
 
         $entityManager->flush();
 
-        // atention si c'est une redirection alors ce n'est pas un JsonResponse mais une Response que l'on attend 
-        return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER);
     }
 
-
-    #[Route('/users/{id}/delete/patient', name: 'app_user_delete_patient', methods: ['DELETE'])]
-    public function deletePatient(int $id, AppUser $appUser, PatientRepository $patientRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): Response
+    private function deletePatient(int $id, PatientRepository $patientRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): void 
     {
-
         // Supprimez la relation entre transaction et patient
         $transactions = $transactionRepository->findBy(['idUser' => $id]);
 
         foreach ($transactions as $transaction) {
-
             $entityManager->remove($transaction);
         }
 
@@ -221,161 +238,19 @@ class UsersController extends AbstractController
         $appointments = $appointmentRepository->findBy(['idPatient' => $id]);
 
         foreach ($appointments as $appointment) {
-            // Utilisez des composants de clé primaire séparément
-            $idCoach = $appointment->getIdCoach();
-            $idPatient = $appointment->getIdPatient();
-            $idSchedule = $appointment->getIdSchedule();
-
-            // Cherchez et supprimez l'entité Appointment par ses composants de clé primaire
-            $appointmentToDelete = $appointmentRepository->findOneBy([
-                'idCoach' => $idCoach,
-                'idPatient' => $idPatient,
-                'idSchedule' => $idSchedule
-            ]);
-
-            if ($appointmentToDelete) {
-                $entityManager->remove($appointmentToDelete);
-            }
+            $entityManager->remove($appointment);
         }
 
-        // suprimer le patient de l'entité Patient
+        // supprimer le patient de l'entité Patient
         $patient = $patientRepository->findOneBy(['idUser' => $id]);
 
         if ($patient) {
-
             $entityManager->remove($patient);
         }
 
-        // Supprimer l'utilisateur patient de l'entité AppUser
-        $entityManager->remove($appUser);
-
         $entityManager->flush();
 
-        // SEE_OTHER = code 200 ok
-        return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER);
     }
-
-
-    // #[Route('/users/{id}/delete', name: 'app_user_delete', methods: ['DELETE'])]
-    // public function deleteUser(int $id, AppUser $appUser, Coach $coach, Patient $patient, CoachRepository $coachRepository, PatientRepository $patientRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): Response
-    // {
-
-    // // $coachRole = $coachRepository->findOneBy(['idUser' => $id]);
-    // // $patient = $patientRepository->findOneBy(['idUser' => $id]);
-
-    // $userRoles = $appUser->getRoles();
-
-    //     if (in_array("ROLE_COACH", $userRoles)) {
-
-    //         // Supprimez la relation entre PlanningRules et Coach
-    //         $planningRules = $planningRulesRepository->findBy(['idUser' => $id]);
-
-    //         foreach ($planningRules as $planningRule) {
-
-    //             $entityManager->remove($planningRule);
-    //         }
-
-    //         // Supprimer la relation entre Availability et Coach
-    //         $availabilities = $availabilityRepository->findBy(['idUser' => $id]);
-
-    //         foreach ($availabilities as $availability) {
-
-    //             $entityManager->remove($availability);
-    //         }
-
-    //         // Supprimez la relation entre Appointment et Coach
-    //         $appointments = $appointmentRepository->findBy(['idCoach' => $id]);
-
-    //         foreach ($appointments as $appointment) {
-    //             // Utilisez des composants de clé primaire séparément
-    //             $idCoach = $appointment->getIdCoach();
-    //             $idPatient = $appointment->getIdPatient();
-    //             $idSchedule = $appointment->getIdSchedule();
-
-    //             // Cherchez et supprimez l'entité Appointment par ses composants de clé primaire
-    //             $appointmentToDelete = $appointmentRepository->findOneBy([
-    //                 'idCoach' => $idCoach,
-    //                 'idPatient' => $idPatient,
-    //                 'idSchedule' => $idSchedule
-    //             ]);
-
-    //             if ($appointmentToDelete) {
-    //                 $entityManager->remove($appointmentToDelete);
-    //             }
-    //         }
-
-    //         // Supprimez le coach de l'entité coach
-    //         $coach = $coachRepository->findOneBy(['idUser' => $id]);
-
-    //         if ($coach) {
-    //             $entityManager->remove($coach);
-    //         }
-
-    //         // // Supprimez l'utilisateur de l'entité AppUser
-    //         // $entityManager->remove($appUser);
-
-    //         // $entityManager->flush();
-
-    //         // return $this->redirectToRoute('app_all_user', [], Response::HTTP_SEE_OTHER);
-
-    //     } elseif (in_array("ROLE_USER", $userRoles)) {
-
-    //         // Supprimez la relation entre transaction et patient
-    //         $transactions = $transactionRepository->findBy(['idUser' => $id]);
-
-    //         foreach ($transactions as $transaction) {
-
-    //             $entityManager->remove($transaction);
-    //         }
-
-    //         // Supprimez la relation entre Appointment et patient
-    //         $appointments = $appointmentRepository->findBy(['idPatient' => $id]);
-
-    //         foreach ($appointments as $appointment) {
-    //             // Utilisez des composants de clé primaire séparément
-    //             $idCoach = $appointment->getIdCoach();
-    //             $idPatient = $appointment->getIdPatient();
-    //             $idSchedule = $appointment->getIdSchedule();
-
-    //             // Cherchez et supprimez l'entité Appointment par ses composants de clé primaire
-    //             $appointmentToDelete = $appointmentRepository->findOneBy([
-    //                 'idCoach' => $idCoach,
-    //                 'idPatient' => $idPatient,
-    //                 'idSchedule' => $idSchedule
-    //             ]);
-
-    //             if ($appointmentToDelete) {
-    //                 $entityManager->remove($appointmentToDelete);
-    //             }
-    //         }
-
-    //         // Supprimez le patient de l'entité Patient
-    //         $patient = $patientRepository->findOneBy(['idUser' => $id]);
-
-    //         if ($patient) {
-
-    //             $entityManager->remove($patient);
-    //         }
-
-    //         // // Supprimez l'utilisateur de l'entité AppUser
-    //         // $entityManager->remove($appUser);
-
-    //         // $entityManager->flush();
-
-    //         // return $this->redirectToRoute('app_all_user', [], Response::HTTP_SEE_OTHER);
-
-    //     } else {
-
-    //         return new JsonResponse("The selected id is incorrect", Response::HTTP_BAD_REQUEST);
-    //     }
-
-    //     // Supprimez l'utilisateur de l'entité AppUser
-    //     $entityManager->remove($appUser);
-
-    //     $entityManager->flush();
-
-    //     return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER);
-    // }
 
 
 }

@@ -13,8 +13,6 @@ class HomePageController extends AbstractController
     {
 
 
-        
-
 
         return $this->render('home_page/index.html.twig', [
             'controller_name' => 'HomePageController',

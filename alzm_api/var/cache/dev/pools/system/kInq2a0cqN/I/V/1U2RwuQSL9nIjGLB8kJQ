@@ -1,3 +1,0 @@
-<?php //Doctrine%255CORM%255CQuery%2523getQueryCacheDriver
-
-return [PHP_INT_MAX, []];

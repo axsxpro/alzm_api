@@ -48,7 +48,7 @@ class AvailabilityRepository extends ServiceEntityRepository
     }
 
 
-    // on supprime une availability en fonction de son id et l'id du coach
+    
     public function findAvailabilityCoachById($id, $idAvailability)
     {
         return $this->createQueryBuilder('availability')

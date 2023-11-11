@@ -34,6 +34,7 @@ return array(
     'App\\Entity\\Schedule' => $baseDir . '/src/Entity/Schedule.php',
     'App\\Entity\\Text' => $baseDir . '/src/Entity/Text.php',
     'App\\Entity\\Transaction' => $baseDir . '/src/Entity/Transaction.php',
+    'App\\Form\\AppUserType' => $baseDir . '/src/Form/AppUserType.php',
     'App\\Kernel' => $baseDir . '/src/Kernel.php',
     'App\\Repository\\AdminRepository' => $baseDir . '/src/Repository/AdminRepository.php',
     'App\\Repository\\AdvantageRepository' => $baseDir . '/src/Repository/AdvantageRepository.php',

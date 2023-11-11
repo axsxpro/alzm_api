@@ -628,6 +628,7 @@ class ComposerStaticInite40303c10a491ed3de3a4c4fcffd2c4e
         'App\\Entity\\Schedule' => __DIR__ . '/../..' . '/src/Entity/Schedule.php',
         'App\\Entity\\Text' => __DIR__ . '/../..' . '/src/Entity/Text.php',
         'App\\Entity\\Transaction' => __DIR__ . '/../..' . '/src/Entity/Transaction.php',
+        'App\\Form\\AppUserType' => __DIR__ . '/../..' . '/src/Form/AppUserType.php',
         'App\\Kernel' => __DIR__ . '/../..' . '/src/Kernel.php',
         'App\\Repository\\AdminRepository' => __DIR__ . '/../..' . '/src/Repository/AdminRepository.php',
         'App\\Repository\\AdvantageRepository' => __DIR__ . '/../..' . '/src/Repository/AdvantageRepository.php',

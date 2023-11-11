@@ -50,7 +50,7 @@ class AvailabilityController extends AbstractController
     }
 
 
-    // creation d'un rendez-vous
+    // creation d'une disponibilités
     #[Route('/post/coachs/{id}/availabilities', name: "app_availabilities_post", methods: ['POST'])]
     public function createUsers(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -77,17 +77,14 @@ class AvailabilityController extends AbstractController
 
     // modifier la disponibilité d'un coach
     #[Route('/put/coachs/{id}/availabilities/{idAvailability}', name: "app_availabilities_put", methods: ['PUT'])]
-    public function updateAvailabilities(int $id, int $idAvailability, Request $request, SerializerInterface $serializer, Availability $availability, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function updateAvailabilities(int $id, int $idAvailability, Request $request, SerializerInterface $serializer, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): JsonResponse
     {
-        $availabilityById = $availabilityRepository->findAvailabilityCoachById($id, $idAvailability);
+        $availability = $availabilityRepository->findAvailabilityCoachById($id, $idAvailability);
 
-        // Les données JSON de la requête sont transformées en un objet appUser
-        // [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser] :  permet de mettre à jour l'objet $appUser existant avec les nouvelles données.
-        $updateAvailability = $serializer->deserialize($request->getContent(), Availability::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $availabilityById]);
 
-        // $updateAvailabilities->getIdAvailability($availabilityRepository->find($id_availability));
-
-        // $updateAvailability->setIdUser($coachRepository->find($id));
+        // Les données JSON de la requête sont transformées en un objet 
+        // [AbstractNormalizer::OBJECT_TO_POPULATE => $availability] :  permet de mettre à jour l'objet $availability existant avec les nouvelles données.
+        $updateAvailability = $serializer->deserialize($request->getContent(), Availability::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $availability]);
 
         $entityManager->persist($updateAvailability);
 

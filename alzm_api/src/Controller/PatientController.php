@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\AppUser;
 use App\Entity\Patient;
+use App\Repository\AppointmentRepository;
 use App\Repository\PatientRepository;
+use App\Repository\TransactionRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,4 +41,40 @@ class PatientController extends AbstractController
         return new JsonResponse($patientById, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
+
+    #[Route('/delete/patients/{id}', name: 'app_delete_patient', methods: ['DELETE'])]
+    public function deletePatient(int $id, AppUser $appUser, PatientRepository $patientRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): Response
+    {
+
+        // Supprimez la relation entre transaction et patient
+        $transactions = $transactionRepository->findBy(['idUser' => $id]);
+
+        foreach ($transactions as $transaction) {
+
+            $entityManager->remove($transaction);
+        }
+
+        // Supprimez la relation entre Appointment et Coach
+        $appointments = $appointmentRepository->findBy(['idPatient' => $id]);
+
+        foreach ($appointments as $appointment) {
+            $entityManager->remove($appointment);
+        }
+
+        // suprimer le patient de l'entité Patient
+        $patient = $patientRepository->findOneBy(['idUser' => $id]);
+
+        if ($patient) {
+
+            $entityManager->remove($patient);
+        }
+
+        // Supprimer l'utilisateur patient de l'entité AppUser
+        $entityManager->remove($appUser);
+
+        $entityManager->flush();
+
+        // SEE_OTHER = code 200 ok
+        return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER, true);
+    }
 }

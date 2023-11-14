@@ -1,3 +1,6 @@
 sensio_framework_extra:
     router:
-        annotations: false
+        annotations: false # Vous pouvez activer les annotations pour le routeur si vous ne les avez pas déjà activées
+    request:
+        converters: true
+

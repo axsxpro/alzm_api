@@ -9,6 +9,7 @@ use App\Repository\AvailabilityRepository;
 use App\Repository\CoachRepository;
 use App\Repository\PlanningRulesRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,7 @@ class CoachController extends AbstractController
 {
 
     #[Route('/coachs', name: 'app_all_coach')]
+    
     public function allCoach(CoachRepository $coachRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 

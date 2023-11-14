@@ -24,18 +24,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class UsersController extends AbstractController
 {
     #[Route('/users', name: 'app_users', methods: ['GET'])]
+    #[IsGranted("ROLE_ADMIN")] //  seuls les utilisateurs ayant le rôle "ROLE_ADMIN" auront la permission d'accéder à la ressource
     public function getUsers(AppUserRepository $AppUserRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
         // afficher tous les utilisateurs de la base de données
         $users = $AppUserRepository->findAll();
 
+        // serialisation : convertir  des objets en chaine de caractères
         $usersJson = $serializerInterface->serialize($users, 'json');
 
         // le code retour : Response::HTTP_OK :  correspond au code 200
@@ -71,7 +73,8 @@ class UsersController extends AbstractController
 
     // creation d'un nouvel user
     #[Route('/post/users', name: "app_users_post", methods: ['POST'])]
-    public function createUsers(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasherInterface): JsonResponse
+    public function createUsers(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager,
+     UserPasswordHasherInterface $userPasswordHasherInterface): JsonResponse
     {
 
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.

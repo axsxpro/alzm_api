@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class PatientController extends AbstractController
 {
-    #[Route('/patients', name: 'app_all_patient')]
+    #[Route('/patients', name: 'app_all_patient', methods: ['GET'])]
     public function allPatient(PatientRepository $patientRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 

@@ -419,6 +419,13 @@
         <argument type="service" id=".service_locator.mx0UMmY.App\Controller\PlanningRulesController"/>
       </call>
     </service>
+    <service id="App\Controller\ScheduleController" class="App\Controller\ScheduleController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.mx0UMmY.App\Controller\ScheduleController"/>
+      </call>
+    </service>
     <service id="App\Controller\TransactionController" class="App\Controller\TransactionController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -5362,7 +5369,7 @@
       <argument type="iterator">
         <argument key="security.firewall.map.context.dev" type="service" id=".security.request_matcher.Iy.T22O"/>
         <argument key="security.firewall.map.context.login" type="service" id=".security.request_matcher.HeUdK73"/>
-        <argument key="security.firewall.map.context.api" type="service" id=".security.request_matcher.p4VlLPC"/>
+        <argument key="security.firewall.map.context.api" type="service" id=".security.request_matcher.3UEFixr"/>
       </argument>
     </service>
     <service id="security.firewall.context" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext" abstract="true">
@@ -5491,13 +5498,6 @@
         <argument type="service" id=".security.request_matcher.wjxqTvB"/>
         <argument type="collection">
           <argument>PUBLIC_ACCESS</argument>
-        </argument>
-        <argument>null</argument>
-      </call>
-      <call method="add">
-        <argument type="service" id=".security.request_matcher.PhQgZ9B"/>
-        <argument type="collection">
-          <argument>IS_AUTHENTICATED_FULLY</argument>
         </argument>
         <argument>null</argument>
       </call>
@@ -6010,7 +6010,7 @@
     <service id="security.firewall.map.config.api" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig">
       <argument>api</argument>
       <argument>security.user_checker</argument>
-      <argument>.security.request_matcher.p4VlLPC</argument>
+      <argument>.security.request_matcher.3UEFixr</argument>
       <argument>true</argument>
       <argument>true</argument>
       <argument>security.user.provider.concrete.app_user_provider</argument>
@@ -6023,8 +6023,8 @@
       </argument>
       <argument>null</argument>
     </service>
-    <service id=".security.request_matcher.p4VlLPC" class="Symfony\Component\HttpFoundation\RequestMatcher">
-      <argument>^/api</argument>
+    <service id=".security.request_matcher.3UEFixr" class="Symfony\Component\HttpFoundation\RequestMatcher">
+      <argument>^/</argument>
     </service>
     <service id="security.event_dispatcher.api" class="Symfony\Component\EventDispatcher\EventDispatcher">
       <tag name="security.event_dispatcher.api">event_dispatcher.dispatcher</tag>
@@ -6146,9 +6146,6 @@
     </service>
     <service id=".security.request_matcher.wjxqTvB" class="Symfony\Component\HttpFoundation\RequestMatcher">
       <argument>^/home</argument>
-    </service>
-    <service id=".security.request_matcher.PhQgZ9B" class="Symfony\Component\HttpFoundation\RequestMatcher">
-      <argument>^/</argument>
     </service>
     <service id="security.command.user_password_encoder" class="Symfony\Bundle\SecurityBundle\Command\UserPasswordEncoderCommand">
       <tag name="console.command" command="security:encode-password"/>
@@ -6710,6 +6707,9 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\PlanningRulesController" class="App\Controller\PlanningRulesController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\PlanningRulesController" class="App\Controller\PlanningRulesController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\PlanningRulesController" class="App\Controller\PlanningRulesController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\ScheduleController" class="App\Controller\ScheduleController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\ScheduleController" class="App\Controller\ScheduleController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\ScheduleController" class="App\Controller\ScheduleController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\TransactionController" class="App\Controller\TransactionController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\TransactionController" class="App\Controller\TransactionController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\TransactionController" class="App\Controller\TransactionController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -7268,6 +7268,28 @@
         <argument key="serializer" type="service_closure" id="serializer"/>
       </argument>
     </service>
+    <service id=".service_locator.7nc7lRV" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="planningRulesRepository" type="service_closure" id="App\Repository\PlanningRulesRepository"/>
+        <argument key="serializer" type="service_closure" id="serializer"/>
+      </argument>
+    </service>
+    <service id=".service_locator.Jylu4lG" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="planningRulesRepository" type="service_closure" id="App\Repository\PlanningRulesRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.hns9zUi" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="scheduleRepository" type="service_closure" id="App\Repository\ScheduleRepository"/>
+        <argument key="serializerInterface" type="service_closure" id="serializer"/>
+      </argument>
+    </service>
     <service id=".service_locator.v57OW1I" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -7326,7 +7348,7 @@
         <argument key="transactionRepository" type="service_closure" id="App\Repository\TransactionRepository"/>
       </argument>
     </service>
-    <service id=".service_locator.dg.WyEi" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.Rc6eqeu" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\AdminController::allAdmin" type="service_closure" id=".service_locator.fmKhUTq"/>
@@ -7343,14 +7365,17 @@
         <argument key="App\Controller\CoachController::allCoach" type="service_closure" id=".service_locator.NWz6gvW"/>
         <argument key="App\Controller\CoachController::deleteCoach" type="service_closure" id=".service_locator.bRtUlSQ"/>
         <argument key="App\Controller\CoachController::getallPatients" type="service_closure" id=".service_locator.54rra3g"/>
-        <argument key="App\Controller\CourseController::allCourse" type="service_closure" id=".service_locator.J2Qh6MH"/>
+        <argument key="App\Controller\CourseController::getCourses" type="service_closure" id=".service_locator.J2Qh6MH"/>
         <argument key="App\Controller\PatientController::allPatient" type="service_closure" id=".service_locator.lVJkG_9"/>
         <argument key="App\Controller\PatientController::deletePatient" type="service_closure" id=".service_locator.lDNiEmG"/>
         <argument key="App\Controller\PatientController::getallPatients" type="service_closure" id=".service_locator.o.RTbA2"/>
         <argument key="App\Controller\PlanController::allPlan" type="service_closure" id=".service_locator.5ZCwxsA"/>
-        <argument key="App\Controller\PlanningRulesController::allPlan" type="service_closure" id=".service_locator.XWu.50g"/>
-        <argument key="App\Controller\PlanningRulesController::createUsers" type="service_closure" id=".service_locator.xQRnlgm"/>
+        <argument key="App\Controller\PlanningRulesController::createPlannings" type="service_closure" id=".service_locator.xQRnlgm"/>
+        <argument key="App\Controller\PlanningRulesController::deletePlannings" type="service_closure" id=".service_locator.Jylu4lG"/>
         <argument key="App\Controller\PlanningRulesController::getPlanningById" type="service_closure" id=".service_locator.3YgwsAp"/>
+        <argument key="App\Controller\PlanningRulesController::getPlanningsRules" type="service_closure" id=".service_locator.XWu.50g"/>
+        <argument key="App\Controller\PlanningRulesController::updatePlannings" type="service_closure" id=".service_locator.7nc7lRV"/>
+        <argument key="App\Controller\ScheduleController::getSchedules" type="service_closure" id=".service_locator.hns9zUi"/>
         <argument key="App\Controller\TransactionController::allTransaction" type="service_closure" id=".service_locator.v57OW1I"/>
         <argument key="App\Controller\UsersController::createUsers" type="service_closure" id=".service_locator.MpaYdub"/>
         <argument key="App\Controller\UsersController::deleteUser" type="service_closure" id=".service_locator.Sj2uvAJ"/>
@@ -7376,14 +7401,17 @@
         <argument key="App\Controller\CoachController:allCoach" type="service_closure" id=".service_locator.NWz6gvW"/>
         <argument key="App\Controller\CoachController:deleteCoach" type="service_closure" id=".service_locator.bRtUlSQ"/>
         <argument key="App\Controller\CoachController:getallPatients" type="service_closure" id=".service_locator.54rra3g"/>
-        <argument key="App\Controller\CourseController:allCourse" type="service_closure" id=".service_locator.J2Qh6MH"/>
+        <argument key="App\Controller\CourseController:getCourses" type="service_closure" id=".service_locator.J2Qh6MH"/>
         <argument key="App\Controller\PatientController:allPatient" type="service_closure" id=".service_locator.lVJkG_9"/>
         <argument key="App\Controller\PatientController:deletePatient" type="service_closure" id=".service_locator.lDNiEmG"/>
         <argument key="App\Controller\PatientController:getallPatients" type="service_closure" id=".service_locator.o.RTbA2"/>
         <argument key="App\Controller\PlanController:allPlan" type="service_closure" id=".service_locator.5ZCwxsA"/>
-        <argument key="App\Controller\PlanningRulesController:allPlan" type="service_closure" id=".service_locator.XWu.50g"/>
-        <argument key="App\Controller\PlanningRulesController:createUsers" type="service_closure" id=".service_locator.xQRnlgm"/>
+        <argument key="App\Controller\PlanningRulesController:createPlannings" type="service_closure" id=".service_locator.xQRnlgm"/>
+        <argument key="App\Controller\PlanningRulesController:deletePlannings" type="service_closure" id=".service_locator.Jylu4lG"/>
         <argument key="App\Controller\PlanningRulesController:getPlanningById" type="service_closure" id=".service_locator.3YgwsAp"/>
+        <argument key="App\Controller\PlanningRulesController:getPlanningsRules" type="service_closure" id=".service_locator.XWu.50g"/>
+        <argument key="App\Controller\PlanningRulesController:updatePlannings" type="service_closure" id=".service_locator.7nc7lRV"/>
+        <argument key="App\Controller\ScheduleController:getSchedules" type="service_closure" id=".service_locator.hns9zUi"/>
         <argument key="App\Controller\TransactionController:allTransaction" type="service_closure" id=".service_locator.v57OW1I"/>
         <argument key="App\Controller\UsersController:createUsers" type="service_closure" id=".service_locator.MpaYdub"/>
         <argument key="App\Controller\UsersController:deleteUser" type="service_closure" id=".service_locator.Sj2uvAJ"/>
@@ -7889,6 +7917,12 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.mx0UMmY" method="withContext"/>
     </service>
+    <service id=".service_locator.mx0UMmY.App\Controller\ScheduleController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\ScheduleController"/>
+      <argument>App\Controller\ScheduleController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.mx0UMmY" method="withContext"/>
+    </service>
     <service id=".service_locator.mx0UMmY.App\Controller\TransactionController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\TransactionController"/>
       <argument>App\Controller\TransactionController</argument>
@@ -8087,12 +8121,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.dg.WyEi"/>
+      <argument type="service" id=".service_locator.Rc6eqeu"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.dg.WyEi"/>
+      <argument type="service" id=".service_locator.Rc6eqeu"/>
     </service>
     <service id="debug.traced.messenger.bus.default.inner" class="Symfony\Component\Messenger\MessageBus">
       <argument type="iterator">
@@ -9106,7 +9140,7 @@
     <service id="lexik_jwt_authentication.key_loader" alias="lexik_jwt_authentication.key_loader.raw" public="true"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.dg.WyEi"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.Rc6eqeu"/>
     <service id="session" alias=".session.do-not-use" public="true">
       <deprecated package="symfony/framework-bundle" version="5.3">The "%alias_id%" service and "SessionInterface" alias are deprecated, use "$requestStack-&gt;getSession()" instead.</deprecated>
     </service>
@@ -9136,11 +9170,13 @@
     <service id=".service_locator.j8viKLS" alias=".service_locator.f8xil.J"/>
     <service id=".service_locator.RXX9kmo" alias=".service_locator.bRtUlSQ"/>
     <service id=".service_locator._77Ne.S" alias=".service_locator.lDNiEmG"/>
+    <service id=".service_locator.j0DZ30W" alias=".service_locator.7nc7lRV"/>
+    <service id=".service_locator.yiHNBf7" alias=".service_locator.Jylu4lG"/>
     <service id=".service_locator.LGqQIlW" alias=".service_locator.v57OW1I"/>
     <service id=".service_locator.tpGiab9" alias=".service_locator.MpaYdub"/>
     <service id=".service_locator.ynDkjdJ" alias=".service_locator.h5Zosne"/>
     <service id=".service_locator.gpulfb4" alias=".service_locator.Sj2uvAJ"/>
-    <service id=".service_locator.18BS3pq" alias=".service_locator.dg.WyEi"/>
+    <service id=".service_locator.8OuTmla" alias=".service_locator.Rc6eqeu"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
     <service id=".service_locator.6hl676o" alias=".service_locator.OEinDxj"/>
     <service id=".service_locator.nk0lT0X" alias=".service_locator.1kmbKC8"/>
@@ -9188,6 +9224,9 @@
     <service id=".service_locator._U5VoH3" alias=".service_locator.5ZCwxsA"/>
     <service id=".service_locator.acGc_PX" alias=".service_locator.XWu.50g"/>
     <service id=".service_locator.PNQ6scK" alias=".service_locator.3YgwsAp"/>
+    <service id=".service_locator.PCQRWeB" alias=".service_locator.7nc7lRV"/>
+    <service id=".service_locator.3apI4_0" alias=".service_locator.Jylu4lG"/>
+    <service id=".service_locator.nxBSACs" alias=".service_locator.hns9zUi"/>
     <service id=".service_locator.w6TpAkN" alias=".service_locator.v57OW1I"/>
     <service id=".service_locator.jDNz3g2" alias=".service_locator.5AgJos5"/>
     <service id=".service_locator.6JCCGQ6" alias=".service_locator.E2DLjxp"/>

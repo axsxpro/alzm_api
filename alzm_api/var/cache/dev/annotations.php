@@ -102,8 +102,8 @@ return [[
 '[C]App%5CController%5CCoachController%23deleteCoach' => 1,
 'App%5CController%5CCourseController' => 0,
 '[C]App%5CController%5CCourseController' => 1,
-'App%5CController%5CCourseController%23allCourse' => 0,
-'[C]App%5CController%5CCourseController%23allCourse' => 1,
+'App%5CController%5CCourseController%23getCourses' => 0,
+'[C]App%5CController%5CCourseController%23getCourses' => 1,
 'App%5CController%5CHomePageController' => 0,
 '[C]App%5CController%5CHomePageController' => 1,
 'App%5CController%5CHomePageController%23index' => 0,
@@ -122,12 +122,16 @@ return [[
 '[C]App%5CController%5CPlanController%23allPlan' => 1,
 'App%5CController%5CPlanningRulesController' => 0,
 '[C]App%5CController%5CPlanningRulesController' => 1,
-'App%5CController%5CPlanningRulesController%23allPlan' => 0,
-'[C]App%5CController%5CPlanningRulesController%23allPlan' => 1,
+'App%5CController%5CPlanningRulesController%23getPlanningsRules' => 0,
+'[C]App%5CController%5CPlanningRulesController%23getPlanningsRules' => 1,
 'App%5CController%5CPlanningRulesController%23getPlanningById' => 0,
 '[C]App%5CController%5CPlanningRulesController%23getPlanningById' => 1,
-'App%5CController%5CPlanningRulesController%23createUsers' => 0,
-'[C]App%5CController%5CPlanningRulesController%23createUsers' => 1,
+'App%5CController%5CPlanningRulesController%23createPlannings' => 0,
+'[C]App%5CController%5CPlanningRulesController%23createPlannings' => 1,
+'App%5CController%5CPlanningRulesController%23updatePlannings' => 0,
+'[C]App%5CController%5CPlanningRulesController%23updatePlannings' => 1,
+'App%5CController%5CPlanningRulesController%23deletePlannings' => 0,
+'[C]App%5CController%5CPlanningRulesController%23deletePlannings' => 1,
 'App%5CController%5CTransactionController' => 0,
 '[C]App%5CController%5CTransactionController' => 1,
 'App%5CController%5CTransactionController%23allTransaction' => 0,
@@ -1178,7 +1182,7 @@ return [[
 ], [
 
 0 => [],
-1 => 1699980127,
+1 => 1700504394,
 2 => static function () {
     return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
         $o = [

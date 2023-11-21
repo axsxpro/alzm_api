@@ -30,7 +30,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class UsersController extends AbstractController
 {
     #[Route('/users', name: 'app_users', methods: ['GET'])]
-    #[IsGranted("ROLE_ADMIN")] //  seuls les utilisateurs ayant le rôle "ROLE_ADMIN" auront la permission d'accéder à la ressource
+    // #[IsGranted("ROLE_ADMIN")] //  seuls les utilisateurs ayant le rôle "ROLE_ADMIN" auront la permission d'accéder à la ressource
     public function getUsers(AppUserRepository $AppUserRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
@@ -73,8 +73,7 @@ class UsersController extends AbstractController
 
     // creation d'un nouvel user
     #[Route('/post/users', name: "app_users_post", methods: ['POST'])]
-    public function createUsers(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager,
-     UserPasswordHasherInterface $userPasswordHasherInterface): JsonResponse
+    public function createUsers(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasherInterface): JsonResponse
     {
 
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
@@ -134,13 +133,7 @@ class UsersController extends AbstractController
         // AppUser::class : C'est la classe PHP vers laquelle les données JSON seront désérialisées. Dans ce cas, c'est la classe AppUser.
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser] :  permet de mettre à jour l'objet $appUser existant avec les nouvelles données, les données du JSON seront intégrées dans cet objet existant au lieu de créer un nouvel objet
         // 'ignored_attributes' : ce sont les attribus que l'on ne va pas désérialiser donc non modifiable
-        $updatedUsers = $serializer->deserialize($request->getContent(), AppUser::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth']]);
-
-        // récupération de la date 
-        $updatedUsers->getDateRegistration();
-
-        // mettre la date d'inscription à la date du jour 
-        $updatedUsers->setDateRegistration(new \DateTime('now'));
+        $updatedUsers = $serializer->deserialize($request->getContent(), AppUser::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth', 'dateRegistration']]);
 
         // Récupération du mot de passe 
         $password = $updatedUsers->getPassword();

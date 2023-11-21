@@ -21,28 +21,36 @@ class PlanningRulesRepository extends ServiceEntityRepository
         parent::__construct($registry, PlanningRules::class);
     }
 
-//    /**
-//     * @return PlanningRules[] Returns an array of PlanningRules objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?PlanningRules
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findPlanningByCoachId($id, $idPlanning)
+    {
+        return $this->createQueryBuilder('planningRules')
+            ->select('planningRules')
+            ->where('planningRules.idUser = :id')
+            ->andWhere('planningRules.idPlanningRules = :idPlanning')
+            ->setParameters([
+                'id' => $id,
+                'idPlanning' => $idPlanning,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult(); //récupérer un seul résultat d'une requête Doctrine
+    }
+
+
+    public function deletePlannings($id, $idPlanning)
+    {
+        return $this->createQueryBuilder('planningRules')
+            ->select('planningRules')
+            ->where('planningRules.idUser = :id')
+            ->andWhere('planningRules.idPlanningRules = :idPlanning')
+            ->setParameters([
+                'id' => $id,
+                'idPlanning' => $idPlanning,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult(); //récupérer un seul résultat d'une requête Doctrine
+    }
+
+
+
 }

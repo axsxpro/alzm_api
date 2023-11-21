@@ -29,6 +29,9 @@ security:
             pattern: ^/ #L'utilisation du ^/ signifie que ce pare-feu s'applique à toutes les routes qui commencent par "/". Cela inclut donc toutes les routes de l'application.
             stateless: true
             jwt: ~
+            # guard:
+            #     authenticators:
+            #         - lexik_jwt_authentication.jwt_token_authenticator
 
         # users:
         #     pattern: ^/users
@@ -47,7 +50,7 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS } #(PUBLIC_ACCESS). Cela signifie que n'importe qui, même sans être authentifié, peut accéder à cette route
         # - { path: ^/users, roles: ROLE_ADMIN }
         - { path: ^/home, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        # - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
         
 
 

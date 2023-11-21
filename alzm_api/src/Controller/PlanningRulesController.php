@@ -11,12 +11,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class PlanningRulesController extends AbstractController
 {
-    #[Route('/planningrules', name: 'app_all_planning_rules')]
-    public function allPlan(PlanningRulesRepository $planningRulesRepository, SerializerInterface $serializerInterface): JsonResponse
+    #[Route('/planningrules', name: 'app_planning_rules', methods: ['GET'])]
+    public function getPlanningsRules(PlanningRulesRepository $planningRulesRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
         // afficher tous les utilisateurs de la base de données
@@ -31,7 +32,7 @@ class PlanningRulesController extends AbstractController
     }
 
 
-    // //utilisation du ParamConverter
+
     #[Route('/planningrules/{id}', name: 'planning_id', methods: ['GET'])]
     public function getPlanningById(PlanningRules $planningRules, SerializerInterface $serializer): JsonResponse
     {
@@ -41,28 +42,65 @@ class PlanningRulesController extends AbstractController
     }
 
 
-    // creation d'une disponibilités
+    // creation d'un planning
     #[Route('/post/coachs/{id}/plannings-rules', name: "app_plannings_post", methods: ['POST'])]
-    public function createUsers(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function createPlannings(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
-        // AppUser::class: C'est la classe cible dans laquelle on veut désérialiser les données JSON
+        // PlanningRules::class : C'est la classe cible dans laquelle on veut désérialiser les données JSON
         // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
-        $availabilities = $serializer->deserialize($request->getContent(), Availability::class, 'json');
+        $planningRules = $serializer->deserialize($request->getContent(), PlanningRules::class, 'json');
 
-        // On cherche les id du coach et on l'assigne à l'objet availabilities.
-        // Si "find" ne trouve pas les id, alors null sera retourné.
-        $availabilities->setIdUser($coachRepository->find($id));
+        // On cherche l' id du coach et on l'assigne à l'objet PlanningsRules.
+        // Si "find" ne trouve pas l'id, alors null sera retourné.
+        $planningRules->setIdUser($coachRepository->find($id));
 
         // persistance des données dans la BDD
-        $entityManager->persist($availabilities);
+        $entityManager->persist($planningRules);
 
         $entityManager->flush();
 
-        $jsonAvailabilities = $serializer->serialize($availabilities, 'json', ['groups' => 'availability']);
+        $jsonPlanningRules = $serializer->serialize($planningRules, 'json', ['groups' => 'planning']);
 
         // created = code 201
-        return new JsonResponse($jsonAvailabilities, Response::HTTP_CREATED, [], true);
+        return new JsonResponse($jsonPlanningRules, Response::HTTP_CREATED, [], true);
     }
+
+
+    // modifier le planning d'un coach
+    #[Route('/put/coachs/{id}/plannings/{idPlanning}', name: "app_plannings_put", methods: ['PUT'])]
+    public function updatePlannings(int $id, int $idPlanning, Request $request, SerializerInterface $serializer, PlanningRulesRepository $planningRulesRepository, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $planningRules = $planningRulesRepository->findPlanningByCoachId($id, $idPlanning);
+
+        // Les données JSON de la requête sont transformées en un objet 
+        // [AbstractNormalizer::OBJECT_TO_POPULATE => $availability] :  permet de mettre à jour l'objet $availability existant avec les nouvelles données.
+        $updatePlanning = $serializer->deserialize($request->getContent(), PlanningRules::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $planningRules, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth']]);
+
+        $entityManager->persist($updatePlanning);
+
+        $entityManager->flush();
+
+        $jsonUpdatedPlanning = $serializer->serialize($updatePlanning, 'json', ['groups' => 'planning']);
+
+        // accepted = code 202
+        return new JsonResponse($jsonUpdatedPlanning, JsonResponse::HTTP_ACCEPTED, [], true);
+    }
+
+
+    // Les Coachs suppriment leurs plannings
+    #[Route('delete/coachs/{id}/plannings/{idPlanning}', name: 'delete_availabilities', methods: ['DELETE'])]
+    public function deletePlannings(int $id, int $idPlanning, PlanningRulesRepository $planningRulesRepository,  EntityManagerInterface $entityManager): Response
+    {
+        $planningsRules = $planningRulesRepository->deletePlannings($id, $idPlanning);
+
+        $entityManager->remove($planningsRules);
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_planning_rules', [], Response::HTTP_SEE_OTHER, true);
+        // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
 
 }

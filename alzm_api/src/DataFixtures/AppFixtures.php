@@ -119,7 +119,7 @@ class AppFixtures extends Fixture
             $schedule->setYearDate($year);
             $currentTime = new \DateTime(); //obtenir date du jour
 
-            $currentHour = $currentTime->format('H:i:s'); // convertir au format heure (string)
+            $currentHour = $currentTime->format('H:i:s'); // convertir au format heure (attention string)
             $hourStartDate = \DateTime::createFromFormat('H:i:s', $currentHour); // Convertir la chaîne de caractères en objet DateTimeInterface
             $schedule->setHourStartDate($hourStartDate);
 
@@ -153,10 +153,9 @@ class AppFixtures extends Fixture
         foreach ($coaches as $coach) {
 
             $availability = new Availability();
-            // Configurez les détails de la disponibilité
-            $availability->setDateAvailability(new \DateTime()); // Remplacez par la date souhaitée
-            $availability->setHourStartSlot(new \DateTime('09:00:00')); // Heure de début
-            $availability->setHourEndSlot(new \DateTime('10:00:00')); // Heure de fin
+            $availability->setDateAvailability(new \DateTime()); 
+            $availability->setHourStartSlot(\DateTime::createFromFormat('H:i', '09:00')); //heure de début
+            $availability->setHourEndSlot(\DateTime::createFromFormat('H:i', '10:00')); //heeure de fin
             // assigner une disponibilité à un coach
             $availability->setIdUser($coach);
             // Persistez la disponibilité
@@ -168,11 +167,11 @@ class AppFixtures extends Fixture
         foreach ($coaches as $coach) {
             $rules = new PlanningRules();
             // Configurez les règles du planning
-            $rules->setMinimalTimeSlot(new \DateTime('08:00:00'));
-            $rules->setMaximalTimeSlot(new \DateTime('18:00:00'));
+            $rules->setMinimalTimeSlot(\DateTime::createFromFormat('H:i', '08:00'));
+            $rules->setMaximalTimeSlot(\DateTime::createFromFormat('H:i', '18:00'));
             $rules->setWorkDays('5'); // Exemple pour les jours de travail (du lundi au vendredi)
-            $rules->setWorkHoursStart(new \DateTime('08:00:00')); // Heure de début de travail
-            $rules->setWorkHoursEnd(new \DateTime('18:00:00')); // Heure de fin de travail
+            $rules->setWorkHoursStart(\DateTime::createFromFormat('H:i', '08:00')); // Heure de début de travail
+            $rules->setWorkHoursEnd(\DateTime::createFromFormat('H:i', '18:00')); // Heure de fin de travail
             $rules->setTimeBetweenAppointments('30'); // Exemple pour 30 minutes entre les rendez-vous
             $rules->setIdUser($coach);
             // Persistez les règles de planning

@@ -84,7 +84,7 @@ class AvailabilityController extends AbstractController
 
         // Les données JSON de la requête sont transformées en un objet 
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $availability] :  permet de mettre à jour l'objet $availability existant avec les nouvelles données.
-        $updateAvailability = $serializer->deserialize($request->getContent(), Availability::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $availability]);
+        $updateAvailability = $serializer->deserialize($request->getContent(), Availability::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $availability, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth']]);
 
         $entityManager->persist($updateAvailability);
 

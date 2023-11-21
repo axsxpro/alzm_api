@@ -7,6 +7,7 @@ services:
     container_name: alzmi_app
     ports:
       - "8081:80"
+
     # depends_on:
     #   - database
     networks:
@@ -17,6 +18,8 @@ services:
     restart: always
     environment:
       - DATABASE_URL=postgresql://postgres:postgresql16@192.168.1.15:5432/alzmdb?serverVersion=16&charset=utf8
+      # - DATABASE_URL=postgresql://postgres:postgresql16@172.16.2.194:5432/alzmdb?serverVersion=16&charset=utf8
+      # - DATABASE_URL=postgresql://postgres:postgresql16@10.6.2.20:5432/alzmdb?serverVersion=16&charset=utf8
 
 #   # Service de base de données PostgreSQL
 #   database:

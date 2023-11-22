@@ -26,7 +26,7 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
-            pattern: ^/ #L'utilisation du ^/ signifie que ce pare-feu s'applique à toutes les routes qui commencent par "/". Cela inclut donc toutes les routes de l'application.
+            pattern: ^/api #L'utilisation du ^/ signifie que ce pare-feu s'applique à toutes les routes qui commencent par "/api". Cela inclut donc toutes les routes de l'application.
             stateless: true
             jwt: ~
             # guard:
@@ -48,9 +48,10 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS } #(PUBLIC_ACCESS). Cela signifie que n'importe qui, même sans être authentifié, peut accéder à cette route
-        # - { path: ^/users, roles: ROLE_ADMIN }
+        - { path: ^/api/doc, roles: PUBLIC_ACCESS }
         - { path: ^/home, roles: PUBLIC_ACCESS }
-        # - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        # - { path: ^/api/users, roles: ROLE_ADMIN }
+        # - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         
 
 

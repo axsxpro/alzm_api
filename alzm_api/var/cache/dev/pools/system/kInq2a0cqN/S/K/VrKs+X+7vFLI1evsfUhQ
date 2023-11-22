@@ -1,0 +1,3 @@
+<?php //App%255CController%255CScheduleController%2523getSchedules
+
+return [PHP_INT_MAX, []];

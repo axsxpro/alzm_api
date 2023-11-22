@@ -2,13 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Appointment;
 use App\Entity\AppUser;
-use App\Entity\Availability;
 use App\Entity\Coach;
-use App\Entity\Course;
 use App\Entity\Patient;
-use App\Entity\PlanningRules;
 use App\Repository\AppointmentRepository;
 use App\Repository\AppUserRepository;
 use App\Repository\AvailabilityRepository;
@@ -26,11 +22,27 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+// use Nelmio\ApiDocBundle\Annotation\Model;
+// use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
+
+
 
 class UsersController extends AbstractController
 {
-    #[Route('/users', name: 'app_users', methods: ['GET'])]
-    // #[IsGranted("ROLE_ADMIN")] //  seuls les utilisateurs ayant le rôle "ROLE_ADMIN" auront la permission d'accéder à la ressource
+
+    /**
+     * Retrieve all users
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="OK",
+     * )
+     * 
+     * @OA\Tag(name="Users")
+     */
+    #[Route('/api/users', name: 'app_users', methods: ['GET'])]
+    #[IsGranted("ROLE_ADMIN")] //  seuls les utilisateurs ayant le rôle "ROLE_ADMIN" auront la permission d'accéder à la ressource
     public function getUsers(AppUserRepository $AppUserRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
@@ -46,10 +58,18 @@ class UsersController extends AbstractController
         return new JsonResponse($usersJson, Response::HTTP_OK, [], true);
     }
 
-
-
+    /**
+     * Retrieve users by id
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="OK",
+     * )
+     * 
+     * @OA\Tag(name="Users")
+     */
     //récupération d'un user par son ID
-    #[Route('/users/{id}', name: 'users_id', methods: ['GET'])]
+    #[Route('/api/users/{id}', name: 'users_id', methods: ['GET'])]
     public function getUserById(AppUser $appUser, SerializerInterface $serializer): JsonResponse
     {
         $userbyid = $serializer->serialize($appUser, 'json');
@@ -58,8 +78,17 @@ class UsersController extends AbstractController
     }
 
 
-    // Récupération du role d'un user
-    #[Route('/users/{id}/roles', name: 'users_id_roles', methods: ['GET'])]
+    /**
+     * Retrieve users roles by id
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="OK",
+     * )
+     * 
+     * @OA\Tag(name="Users")
+     */
+    #[Route('/api/users/{id}/roles', name: 'users_id_roles', methods: ['GET'])] // Récupération du role d'un user
     public function getRoleById(int $id, AppUserRepository $appUserRepository, SerializerInterface $serializer): JsonResponse
     {
 
@@ -70,9 +99,18 @@ class UsersController extends AbstractController
         return new JsonResponse($roleUser, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
-
+    /**
+     * Create a new user
+     *
+     * @OA\Response(
+     *     response=201,
+     *     description="Created",
+     * )
+     * 
+     * @OA\Tag(name="Users")
+     */
     // creation d'un nouvel user
-    #[Route('/post/users', name: "app_users_post", methods: ['POST'])]
+    #[Route('/api/post/users', name: "app_users_post", methods: ['POST'])]
     public function createUsers(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasherInterface): JsonResponse
     {
 
@@ -127,7 +165,17 @@ class UsersController extends AbstractController
     }
 
 
-    #[Route('/put/users/{id}', name: "app_users_put", methods: ['PUT'])]
+    /**
+     * Edit users informations
+     *
+     * @OA\Response(
+     *     response=202,
+     *     description="Accepted",
+     * )
+     * 
+     * @OA\Tag(name="Users")
+     */
+    #[Route('/api/put/users/{id}', name: "app_users_put", methods: ['PUT'])]
     public function updateUsers(Request $request, SerializerInterface $serializer, AppUser $appUser, UserPasswordHasherInterface $userPasswordHasherInterface, EntityManagerInterface $entityManager): JsonResponse
     {
         // AppUser::class : C'est la classe PHP vers laquelle les données JSON seront désérialisées. Dans ce cas, c'est la classe AppUser.
@@ -155,7 +203,18 @@ class UsersController extends AbstractController
     }
 
 
-    #[Route('/users/{id}/delete', name: 'app_user_delete', methods: ['DELETE'])]
+
+    /**
+     * Delete users
+     *
+     * @OA\Response(
+     *     response=204,
+     *     description="No content",
+     * )
+     * 
+     * @OA\Tag(name="Users")
+     */
+    #[Route('/api/users/{id}/delete', name: 'app_users_delete', methods: ['DELETE'])]
     public function deleteUser(int $id, AppUser $appUser, CoachRepository $coachRepository, PatientRepository $patientRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): Response 
     {
         // récupération du role

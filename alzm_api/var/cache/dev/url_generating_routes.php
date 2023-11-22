@@ -4,6 +4,8 @@
 
 return [
     '_preview_error' => [['code', '_format'], ['_controller' => 'error_controller::preview', '_format' => 'html'], ['code' => '\\d+'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', '\\d+', 'code', true], ['text', '/_error']], [], [], []],
+    'app.swagger' => [[], ['_controller' => 'nelmio_api_doc.controller.swagger'], [], [['text', '/api/doc.json']], [], [], []],
+    'app.swagger_ui' => [[], ['_controller' => 'nelmio_api_doc.controller.swagger_ui'], [], [['text', '/api/doc']], [], [], []],
     '_wdt' => [['token'], ['_controller' => 'web_profiler.controller.profiler::toolbarAction'], [], [['variable', '/', '[^/]++', 'token', true], ['text', '/_wdt']], [], [], []],
     '_profiler_home' => [[], ['_controller' => 'web_profiler.controller.profiler::homeAction'], [], [['text', '/_profiler/']], [], [], []],
     '_profiler_search' => [[], ['_controller' => 'web_profiler.controller.profiler::searchAction'], [], [['text', '/_profiler/search']], [], [], []],
@@ -40,11 +42,11 @@ return [
     'delete_availabilities' => [['id', 'idPlanning'], ['_controller' => 'App\\Controller\\PlanningRulesController::deletePlannings'], [], [['variable', '/', '[^/]++', 'idPlanning', true], ['text', '/plannings'], ['variable', '/', '[^/]++', 'id', true], ['text', '/delete/coachs']], [], [], []],
     'app_schedules' => [[], ['_controller' => 'App\\Controller\\ScheduleController::getSchedules'], [], [['text', '/schedules']], [], [], []],
     'app_transactions' => [[], ['_controller' => 'App\\Controller\\TransactionController::allTransaction'], [], [['text', '/transactions']], [], [], []],
-    'app_users' => [[], ['_controller' => 'App\\Controller\\UsersController::getUsers'], [], [['text', '/users']], [], [], []],
-    'users_id' => [['id'], ['_controller' => 'App\\Controller\\UsersController::getUserById'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/users']], [], [], []],
-    'users_id_roles' => [['id'], ['_controller' => 'App\\Controller\\UsersController::getRoleById'], [], [['text', '/roles'], ['variable', '/', '[^/]++', 'id', true], ['text', '/users']], [], [], []],
-    'app_users_post' => [[], ['_controller' => 'App\\Controller\\UsersController::createUsers'], [], [['text', '/post/users']], [], [], []],
-    'app_users_put' => [['id'], ['_controller' => 'App\\Controller\\UsersController::updateUsers'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/put/users']], [], [], []],
-    'app_user_delete' => [['id'], ['_controller' => 'App\\Controller\\UsersController::deleteUser'], [], [['text', '/delete'], ['variable', '/', '[^/]++', 'id', true], ['text', '/users']], [], [], []],
+    'app_users' => [[], ['_controller' => 'App\\Controller\\UsersController::getUsers'], [], [['text', '/api/users']], [], [], []],
+    'users_id' => [['id'], ['_controller' => 'App\\Controller\\UsersController::getUserById'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/users']], [], [], []],
+    'users_id_roles' => [['id'], ['_controller' => 'App\\Controller\\UsersController::getRoleById'], [], [['text', '/roles'], ['variable', '/', '[^/]++', 'id', true], ['text', '/api/users']], [], [], []],
+    'app_users_post' => [[], ['_controller' => 'App\\Controller\\UsersController::createUsers'], [], [['text', '/api/post/users']], [], [], []],
+    'app_users_put' => [['id'], ['_controller' => 'App\\Controller\\UsersController::updateUsers'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/put/users']], [], [], []],
+    'app_users_delete' => [['id'], ['_controller' => 'App\\Controller\\UsersController::deleteUser'], [], [['text', '/delete'], ['variable', '/', '[^/]++', 'id', true], ['text', '/api/users']], [], [], []],
     'api_login_check' => [[], [], [], [['text', '/api/login_check']], [], [], []],
 ];

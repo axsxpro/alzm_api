@@ -14,13 +14,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-
+use OpenApi\Annotations as OA;
 
 class AppointmentController extends AbstractController
 {
-    // afficher tous les rendez-vous
-    #[Route('/appointments', name: 'app_all_appointments', methods: ['GET'])]
-    public function allAppointment(AppointmentRepository $appointmentRepository, SerializerInterface $serializerInterface): JsonResponse
+
+
+    /**
+     * Get all appointments 
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Ok",
+     * )
+     * 
+     * @OA\Tag(name="Appointment")
+     */
+    #[Route('/api/appointments', name: 'app_all_appointments', methods: ['GET'])]
+    public function getAppointments(AppointmentRepository $appointmentRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
         // afficher tous les utilisateurs de la base de données
@@ -35,9 +46,18 @@ class AppointmentController extends AbstractController
     }
 
 
-    // creation d'un rendez-vous
-    #[Route('/post/appointments', name: "app_appointments_post", methods: ['POST'])]
-    public function createUsers(Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, EntityManagerInterface $entityManager): JsonResponse
+    /**
+     * Create new appointment 
+     *
+     * @OA\Response(
+     *     response=201,
+     *     description="Created",
+     * )
+     * 
+     * @OA\Tag(name="Appointment")
+     */
+    #[Route('/api/post/appointments', name: "app_appointments_post", methods: ['POST'])]
+    public function createAppointment(Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, EntityManagerInterface $entityManager): JsonResponse
     {
 
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
@@ -71,9 +91,18 @@ class AppointmentController extends AbstractController
     }
 
 
-    // Récupérer les rendez-vous d'un coach
-    #[Route('/coachs/{id}/appointments', name: 'app_coach_appointment', methods: ['GET'])]
-    public function appointmentByCoachId(int $id, AppointmentRepository $appointmentRepository, SerializerInterface $serializerInterface): JsonResponse
+    /**
+     * Get appointment by coach id
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Ok",
+     * )
+     * 
+     * @OA\Tag(name="Appointment")
+     */
+    #[Route('/api/coachs/{id}/appointments', name: 'app_coach_appointment', methods: ['GET'])]
+    public function getAppointmentByCoachId(int $id, AppointmentRepository $appointmentRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
         //rechercher un appointment en fonction de l'id d'un coach
@@ -88,8 +117,17 @@ class AppointmentController extends AbstractController
     }
 
 
-    // suprimer un rendez-vous
-    #[Route('/appointments/{id}', name: 'delete_appointment', methods: ['DELETE'])]
+    /**
+     * Delete appointments
+     *
+     * @OA\Response(
+     *     response=204,
+     *     description="No content",
+     * )
+     * 
+     * @OA\Tag(name="Appointment")
+     */
+    #[Route('/api/delete/appointments/{id}', name: 'delete_appointment', methods: ['DELETE'])]
     public function deleteAppointment(Appointment $appointment, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($appointment);
@@ -99,4 +137,7 @@ class AppointmentController extends AbstractController
         return $this->redirectToRoute('app_all_appointments', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+
+
+
 }

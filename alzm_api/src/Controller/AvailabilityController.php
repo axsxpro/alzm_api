@@ -13,14 +13,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Annotations as OA;
+
 
 class AvailabilityController extends AbstractController
 {
-    // afficher toutes les disponiblités
-    #[Route('/availabilities', name: 'app_availabilities')]
-    public function allAvailabilities(AvailabilityRepository $availabilityRepository, SerializerInterface $serializerInterface): JsonResponse
+    
+    /**
+     * Get all availabilities 
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Ok",
+     * )
+     * 
+     * @OA\Tag(name="Availabilities")
+     */
+    #[Route('/api/availabilities', name: 'app_availabilities', methods: ['GET'])]
+    public function getAvailabilities(AvailabilityRepository $availabilityRepository, SerializerInterface $serializerInterface): JsonResponse
     {
-
         // afficher tous les utilisateurs de la base de données
         $availabilities = $availabilityRepository->findAll();
 
@@ -33,9 +44,18 @@ class AvailabilityController extends AbstractController
     }
 
 
-    // Récupérer les availabilities d'un coach
-    #[Route('/coachs/{id}/availabilities', name: 'app_coach_availabilities', methods: ['GET'])]
-    public function availabilitiesByCoachId(int $id, AvailabilityRepository $availabilityRepository, SerializerInterface $serializerInterface): JsonResponse
+    /**
+     * Get availabilities by coach id
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Ok",
+     * )
+     * 
+     * @OA\Tag(name="Availabilities")
+     */
+    #[Route('/api/coachs/{id}/availabilities', name: 'app_coach_availabilities', methods: ['GET'])]
+    public function getAvailabilitiesByCoachId(int $id, AvailabilityRepository $availabilityRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
         //rechercher un appointment en fonction de l'id d'un coach
@@ -50,9 +70,18 @@ class AvailabilityController extends AbstractController
     }
 
 
-    // creation d'une disponibilités
-    #[Route('/post/coachs/{id}/availabilities', name: "app_availabilities_post", methods: ['POST'])]
-    public function createUsers(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, EntityManagerInterface $entityManager): JsonResponse
+    /**
+     * Create new availabilities by coach id
+     *
+     * @OA\Response(
+     *     response=201,
+     *     description="Created",
+     * )
+     * 
+     * @OA\Tag(name="Availabilities")
+     */
+    #[Route('/api/post/coachs/{id}/availabilities', name: "app_availabilities_post", methods: ['POST'])]
+    public function createAvailabilities(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
         // AppUser::class: C'est la classe cible dans laquelle on veut désérialiser les données JSON
@@ -75,12 +104,21 @@ class AvailabilityController extends AbstractController
     }
 
 
-    // modifier la disponibilité d'un coach
-    #[Route('/put/coachs/{id}/availabilities/{idAvailability}', name: "app_availabilities_put", methods: ['PUT'])]
+    
+    /**
+     * Edit availabilities by coach id and by availability id
+     *
+     * @OA\Response(
+     *     response=202,
+     *     description="Accepted",
+     * )
+     * 
+     * @OA\Tag(name="Availabilities")
+     */
+    #[Route('/api/put/coachs/{id}/availabilities/{idAvailability}', name: "app_availabilities_put", methods: ['PUT'])]
     public function updateAvailabilities(int $id, int $idAvailability, Request $request, SerializerInterface $serializer, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         $availability = $availabilityRepository->findAvailabilityCoachById($id, $idAvailability);
-
 
         // Les données JSON de la requête sont transformées en un objet 
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $availability] :  permet de mettre à jour l'objet $availability existant avec les nouvelles données.
@@ -97,9 +135,18 @@ class AvailabilityController extends AbstractController
     }
 
 
-    // Les Coachs suppriment leurs disponibilités 
-    #[Route('delete/coachs/{id}/availabilities/{idAvailability}', name: 'delete_availabilities', methods: ['DELETE'])]
-    public function deleteAvailability(int $id, int $idAvailability, AvailabilityRepository $availabilityRepository,  EntityManagerInterface $entityManager): Response
+    /**
+     * Delete availabilities by coach id and by availability id
+     *
+     * @OA\Response(
+     *     response=204,
+     *     description="No content",
+     * )
+     * 
+     * @OA\Tag(name="Availabilities")
+     */
+    #[Route('/api/delete/coachs/{id}/availabilities/{idAvailability}', name: "app_availabilities_delete", methods: ['DELETE'])]
+    public function deleteAvailabilities(int $id, int $idAvailability, AvailabilityRepository $availabilityRepository,  EntityManagerInterface $entityManager): Response
     {
         $availability = $availabilityRepository->deleteAvailability($id, $idAvailability);
 
@@ -110,5 +157,28 @@ class AvailabilityController extends AbstractController
         return $this->redirectToRoute('app_availabilities', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+
+
+    /**
+     * Delete availabilities 
+     *
+     * @OA\Response(
+     *     response=204,
+     *     description="No content",
+     * )
+     * 
+     * @OA\Tag(name="Availabilities")
+     */
+    #[Route('/api/delete/availabilities/{id}', name: 'delete_availability_id', methods: ['DELETE'])]
+    public function deleteAvailabilityById(Availability $availability, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($availability);
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_availabilities', [], Response::HTTP_SEE_OTHER, true);
+        // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
+
 
 }

@@ -61,6 +61,7 @@ class Course
      */
     private $cost;
 
+    
     /**
      * @var \Doctrine\Common\Collections\Collection
      *

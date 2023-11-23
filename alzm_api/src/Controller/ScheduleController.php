@@ -8,10 +8,23 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Annotations as OA;
+
 
 class ScheduleController extends AbstractController
 {
-    #[Route('/schedules', name: 'app_schedules', methods: ['GET'])]
+
+    /**
+     * Get all schedules
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Ok",
+     * )
+     * 
+     * @OA\Tag(name="Schedules")
+     */
+    #[Route('/api/schedules', name: 'app_schedules', methods: ['GET'])]
     public function getSchedules(ScheduleRepository $scheduleRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 

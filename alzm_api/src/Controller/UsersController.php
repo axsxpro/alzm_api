@@ -32,7 +32,7 @@ class UsersController extends AbstractController
 {
 
     /**
-     * Retrieve all users
+     * Get all users
      *
      * @OA\Response(
      *     response=200,
@@ -59,7 +59,7 @@ class UsersController extends AbstractController
     }
 
     /**
-     * Retrieve users by id
+     * Get users by id
      *
      * @OA\Response(
      *     response=200,
@@ -68,7 +68,6 @@ class UsersController extends AbstractController
      * 
      * @OA\Tag(name="Users")
      */
-    //récupération d'un user par son ID
     #[Route('/api/users/{id}', name: 'users_id', methods: ['GET'])]
     public function getUserById(AppUser $appUser, SerializerInterface $serializer): JsonResponse
     {
@@ -79,7 +78,7 @@ class UsersController extends AbstractController
 
 
     /**
-     * Retrieve users roles by id
+     * Get users roles by id
      *
      * @OA\Response(
      *     response=200,
@@ -109,7 +108,6 @@ class UsersController extends AbstractController
      * 
      * @OA\Tag(name="Users")
      */
-    // creation d'un nouvel user
     #[Route('/api/post/users', name: "app_users_post", methods: ['POST'])]
     public function createUsers(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasherInterface): JsonResponse
     {

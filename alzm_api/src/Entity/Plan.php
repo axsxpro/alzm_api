@@ -83,7 +83,7 @@ class Plan
      *   }
      * )
      * @Groups({"plans"})
-     * @SerializedName("ressources")
+     * @SerializedName("resources")
      */
     private $idResources = array();
 

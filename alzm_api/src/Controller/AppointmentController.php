@@ -54,6 +54,26 @@ class AppointmentController extends AbstractController
      *     description="Created",
      * )
      * 
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="coach", type="object",
+     *             @OA\Property(property="coachInformation", type="object",
+     *                 @OA\Property(property="idUser", type="integer")
+     *             )
+     *         ),
+     *         @OA\Property(property="patient", type="object",
+     *             @OA\Property(property="patientInformation", type="object",
+     *                 @OA\Property(property="idUser", type="integer")
+     *             )
+     *         ),
+     *         @OA\Property(property="schedule", type="object",
+     *             @OA\Property(property="idSchedule", type="integer")
+     *         )
+     *     )
+     * ),
+     * 
      * @OA\Tag(name="Appointment")
      */
     #[Route('/api/post/appointments', name: "app_appointments_post", methods: ['POST'])]
@@ -137,7 +157,4 @@ class AppointmentController extends AbstractController
         return $this->redirectToRoute('app_all_appointments', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-
-
-
 }

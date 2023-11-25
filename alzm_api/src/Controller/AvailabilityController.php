@@ -18,7 +18,7 @@ use OpenApi\Annotations as OA;
 
 class AvailabilityController extends AbstractController
 {
-    
+
     /**
      * Get all availabilities 
      *
@@ -78,6 +78,16 @@ class AvailabilityController extends AbstractController
      *     description="Created",
      * )
      * 
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="dateAvailability", type="string", format="date-time"),
+     *         @OA\Property(property="hourStartSlot", type="string", format="date-time"),
+     *         @OA\Property(property="hourEndSlot", type="string", format="date-time"),
+     *   )
+     * ),
+     * 
      * @OA\Tag(name="Availabilities")
      */
     #[Route('/api/post/coachs/{id}/availabilities', name: "app_availabilities_post", methods: ['POST'])]
@@ -88,8 +98,8 @@ class AvailabilityController extends AbstractController
         // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
         $availabilities = $serializer->deserialize($request->getContent(), Availability::class, 'json');
 
-        // On cherche les id du coach et on l'assigne à l'objet availabilities.
-        // Si "find" ne trouve pas les id, alors null sera retourné.
+        // On cherche l' id du coach et on l'assigne à l'objet availabilities.
+        // Si "find" ne trouve pas l' id, alors null sera retourné.
         $availabilities->setIdUser($coachRepository->find($id));
 
         // persistance des données dans la BDD
@@ -104,7 +114,7 @@ class AvailabilityController extends AbstractController
     }
 
 
-    
+
     /**
      * Edit availabilities by coach id and by availability id
      *
@@ -112,6 +122,16 @@ class AvailabilityController extends AbstractController
      *     response=202,
      *     description="Accepted",
      * )
+     * 
+     *   * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="dateAvailability", type="string", format="date-time", example="2023-12-28T10:00:00+00:00"),
+     *         @OA\Property(property="hourStartSlot", type="string", format="date-time", example="2023-12-28T10:00:00+00:00"),
+     *         @OA\Property(property="hourEndSlot", type="string", format="date-time", example="2023-12-28T10:00:00+00:00"),
+     *   )
+     * ),
      * 
      * @OA\Tag(name="Availabilities")
      */
@@ -122,7 +142,7 @@ class AvailabilityController extends AbstractController
 
         // Les données JSON de la requête sont transformées en un objet 
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $availability] :  permet de mettre à jour l'objet $availability existant avec les nouvelles données.
-        $updateAvailability = $serializer->deserialize($request->getContent(), Availability::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $availability, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth']]);
+        $updateAvailability = $serializer->deserialize($request->getContent(), Availability::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $availability, 'ignored_attributes' => ['idAvailability', 'coach']]);
 
         $entityManager->persist($updateAvailability);
 
@@ -179,6 +199,4 @@ class AvailabilityController extends AbstractController
         return $this->redirectToRoute('app_availabilities', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-
-
 }

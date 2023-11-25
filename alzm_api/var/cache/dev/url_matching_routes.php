@@ -15,7 +15,7 @@ return [
         '/_profiler/search_bar' => [[['_route' => '_profiler_search_bar', '_controller' => 'web_profiler.controller.profiler::searchBarAction'], null, null, null, false, false, null]],
         '/_profiler/phpinfo' => [[['_route' => '_profiler_phpinfo', '_controller' => 'web_profiler.controller.profiler::phpinfoAction'], null, null, null, false, false, null]],
         '/_profiler/open' => [[['_route' => '_profiler_open_file', '_controller' => 'web_profiler.controller.profiler::openAction'], null, null, null, false, false, null]],
-        '/admin/all' => [[['_route' => 'app_all_admin', '_controller' => 'App\\Controller\\AdminController::allAdmin'], null, ['GET' => 0], null, false, false, null]],
+        '/api/admin' => [[['_route' => 'app_admin', '_controller' => 'App\\Controller\\AdminController::allAdmin'], null, ['GET' => 0], null, false, false, null]],
         '/advantages/all' => [[['_route' => 'app_all_advantages', '_controller' => 'App\\Controller\\AdvantagesController::allAdvantages'], null, null, null, false, false, null]],
         '/api/appointments' => [[['_route' => 'app_all_appointments', '_controller' => 'App\\Controller\\AppointmentController::getAppointments'], null, ['GET' => 0], null, false, false, null]],
         '/api/post/appointments' => [[['_route' => 'app_appointments_post', '_controller' => 'App\\Controller\\AppointmentController::createAppointment'], null, ['POST' => 0], null, false, false, null]],
@@ -26,6 +26,7 @@ return [
         '/home' => [[['_route' => 'home', '_controller' => 'App\\Controller\\HomePageController::index'], null, null, null, false, false, null]],
         '/api/patients' => [[['_route' => 'app_all_patient', '_controller' => 'App\\Controller\\PatientController::getPatients'], null, ['GET' => 0], null, false, false, null]],
         '/api/plans' => [[['_route' => 'app_plans', '_controller' => 'App\\Controller\\PlanController::getPlans'], null, ['GET' => 0], null, false, false, null]],
+        '/api/post/plans' => [[['_route' => 'app_plans_post', '_controller' => 'App\\Controller\\PlanController::createPlans'], null, ['POST' => 0], null, false, false, null]],
         '/planningrules' => [[['_route' => 'app_planning_rules', '_controller' => 'App\\Controller\\PlanningRulesController::getPlanningsRules'], null, ['GET' => 0], null, false, false, null]],
         '/api/schedules' => [[['_route' => 'app_schedules', '_controller' => 'App\\Controller\\ScheduleController::getSchedules'], null, ['GET' => 0], null, false, false, null]],
         '/api/transactions' => [[['_route' => 'app_transactions', '_controller' => 'App\\Controller\\TransactionController::getTransactions'], null, ['GET' => 0], null, false, false, null]],
@@ -73,33 +74,38 @@ return [
                             .')'
                             .'|urses/([^/]++)(*:447)'
                         .')'
-                        .'|patients/([^/]++)(*:473)'
+                        .'|p(?'
+                            .'|atients/([^/]++)(*:476)'
+                            .'|lans/([^/]++)(*:497)'
+                        .')'
                     .')'
                     .'|p(?'
-                        .'|ost/coachs/([^/]++)/availabilities(*:520)'
+                        .'|ost/coachs/([^/]++)/availabilities(*:545)'
                         .'|ut/(?'
                             .'|co(?'
-                                .'|achs/([^/]++)/availabilities/([^/]++)(*:576)'
-                                .'|urses/([^/]++)(*:598)'
+                                .'|achs/([^/]++)/availabilities/([^/]++)(*:601)'
+                                .'|urses/([^/]++)(*:623)'
                             .')'
-                            .'|users/([^/]++)(*:621)'
+                            .'|plans/([^/]++)(*:646)'
+                            .'|users/([^/]++)(*:668)'
                         .')'
-                        .'|atients/([^/]++)(*:646)'
+                        .'|atients/([^/]++)(*:693)'
+                        .'|lans/([^/]++)(*:714)'
                     .')'
                     .'|users/([^/]++)(?'
-                        .'|(*:672)'
+                        .'|(*:740)'
                         .'|/(?'
-                            .'|roles(*:689)'
-                            .'|delete(*:703)'
+                            .'|roles(*:757)'
+                            .'|delete(*:771)'
                         .')'
                     .')'
                 .')'
                 .'|/p(?'
-                    .'|lanningrules/([^/]++)(*:740)'
-                    .'|ost/coachs/([^/]++)/plannings\\-rules(*:784)'
-                    .'|ut/coachs/([^/]++)/plannings/([^/]++)(*:829)'
+                    .'|lanningrules/([^/]++)(*:808)'
+                    .'|ost/coachs/([^/]++)/plannings\\-rules(*:852)'
+                    .'|ut/coachs/([^/]++)/plannings/([^/]++)(*:897)'
                 .')'
-                .'|/delete/coachs/([^/]++)/plannings/([^/]++)(*:880)'
+                .'|/delete/coachs/([^/]++)/plannings/([^/]++)(*:948)'
             .')/?$}sDu',
     ],
     [ // $dynamicRoutes
@@ -119,19 +125,22 @@ return [
         405 => [[['_route' => 'app_availabilities_delete', '_controller' => 'App\\Controller\\AvailabilityController::deleteAvailabilities'], ['id', 'idAvailability'], ['DELETE' => 0], null, false, true, null]],
         424 => [[['_route' => 'app_delete_coach', '_controller' => 'App\\Controller\\CoachController::deleteCoach'], ['id'], ['DELETE' => 0], null, true, true, null]],
         447 => [[['_route' => 'delete_courses', '_controller' => 'App\\Controller\\CourseController::deleteCourses'], ['id'], ['DELETE' => 0], null, false, true, null]],
-        473 => [[['_route' => 'app_delete_patient', '_controller' => 'App\\Controller\\PatientController::deletePatient'], ['id'], ['DELETE' => 0], null, false, true, null]],
-        520 => [[['_route' => 'app_availabilities_post', '_controller' => 'App\\Controller\\AvailabilityController::createAvailabilities'], ['id'], ['POST' => 0], null, false, false, null]],
-        576 => [[['_route' => 'app_availabilities_put', '_controller' => 'App\\Controller\\AvailabilityController::updateAvailabilities'], ['id', 'idAvailability'], ['PUT' => 0], null, false, true, null]],
-        598 => [[['_route' => 'app_courses_put', '_controller' => 'App\\Controller\\CourseController::updateCourses'], ['id'], ['PUT' => 0], null, false, true, null]],
-        621 => [[['_route' => 'app_users_put', '_controller' => 'App\\Controller\\UsersController::updateUsers'], ['id'], ['PUT' => 0], null, false, true, null]],
-        646 => [[['_route' => 'patient_id', '_controller' => 'App\\Controller\\PatientController::getPatientById'], ['id'], ['GET' => 0], null, false, true, null]],
-        672 => [[['_route' => 'users_id', '_controller' => 'App\\Controller\\UsersController::getUserById'], ['id'], ['GET' => 0], null, false, true, null]],
-        689 => [[['_route' => 'users_id_roles', '_controller' => 'App\\Controller\\UsersController::getRoleById'], ['id'], ['GET' => 0], null, false, false, null]],
-        703 => [[['_route' => 'app_users_delete', '_controller' => 'App\\Controller\\UsersController::deleteUser'], ['id'], ['DELETE' => 0], null, false, false, null]],
-        740 => [[['_route' => 'planning_id', '_controller' => 'App\\Controller\\PlanningRulesController::getPlanningById'], ['id'], ['GET' => 0], null, false, true, null]],
-        784 => [[['_route' => 'app_plannings_post', '_controller' => 'App\\Controller\\PlanningRulesController::createPlannings'], ['id'], ['POST' => 0], null, false, false, null]],
-        829 => [[['_route' => 'app_plannings_put', '_controller' => 'App\\Controller\\PlanningRulesController::updatePlannings'], ['id', 'idPlanning'], ['PUT' => 0], null, false, true, null]],
-        880 => [
+        476 => [[['_route' => 'app_delete_patient', '_controller' => 'App\\Controller\\PatientController::deletePatient'], ['id'], ['DELETE' => 0], null, false, true, null]],
+        497 => [[['_route' => 'delete_plans', '_controller' => 'App\\Controller\\PlanController::deleteCourses'], ['id'], ['DELETE' => 0], null, false, true, null]],
+        545 => [[['_route' => 'app_availabilities_post', '_controller' => 'App\\Controller\\AvailabilityController::createAvailabilities'], ['id'], ['POST' => 0], null, false, false, null]],
+        601 => [[['_route' => 'app_availabilities_put', '_controller' => 'App\\Controller\\AvailabilityController::updateAvailabilities'], ['id', 'idAvailability'], ['PUT' => 0], null, false, true, null]],
+        623 => [[['_route' => 'app_courses_put', '_controller' => 'App\\Controller\\CourseController::updateCourses'], ['id'], ['PUT' => 0], null, false, true, null]],
+        646 => [[['_route' => 'app_plans_put', '_controller' => 'App\\Controller\\PlanController::updatePlans'], ['id'], ['PUT' => 0], null, false, true, null]],
+        668 => [[['_route' => 'app_users_put', '_controller' => 'App\\Controller\\UsersController::updateUsers'], ['id'], ['PUT' => 0], null, false, true, null]],
+        693 => [[['_route' => 'patient_id', '_controller' => 'App\\Controller\\PatientController::getPatientById'], ['id'], ['GET' => 0], null, false, true, null]],
+        714 => [[['_route' => 'plans_id', '_controller' => 'App\\Controller\\PlanController::getPlanById'], ['id'], ['GET' => 0], null, false, true, null]],
+        740 => [[['_route' => 'users_id', '_controller' => 'App\\Controller\\UsersController::getUserById'], ['id'], ['GET' => 0], null, false, true, null]],
+        757 => [[['_route' => 'users_id_roles', '_controller' => 'App\\Controller\\UsersController::getRoleById'], ['id'], ['GET' => 0], null, false, false, null]],
+        771 => [[['_route' => 'app_users_delete', '_controller' => 'App\\Controller\\UsersController::deleteUser'], ['id'], ['DELETE' => 0], null, false, false, null]],
+        808 => [[['_route' => 'planning_id', '_controller' => 'App\\Controller\\PlanningRulesController::getPlanningById'], ['id'], ['GET' => 0], null, false, true, null]],
+        852 => [[['_route' => 'app_plannings_post', '_controller' => 'App\\Controller\\PlanningRulesController::createPlannings'], ['id'], ['POST' => 0], null, false, false, null]],
+        897 => [[['_route' => 'app_plannings_put', '_controller' => 'App\\Controller\\PlanningRulesController::updatePlannings'], ['id', 'idPlanning'], ['PUT' => 0], null, false, true, null]],
+        948 => [
             [['_route' => 'delete_availabilities', '_controller' => 'App\\Controller\\PlanningRulesController::deletePlannings'], ['id', 'idPlanning'], ['DELETE' => 0], null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

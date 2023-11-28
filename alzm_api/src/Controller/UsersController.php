@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Admin;
 use App\Entity\AppUser;
 use App\Entity\Coach;
 use App\Entity\Patient;
@@ -25,8 +26,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 // use Nelmio\ApiDocBundle\Annotation\Model;
 // use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
-
-
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UsersController extends AbstractController
 {
@@ -42,7 +42,7 @@ class UsersController extends AbstractController
      * @OA\Tag(name="Users")
      */
     #[Route('/api/users', name: 'app_users', methods: ['GET'])]
-    #[IsGranted("ROLE_ADMIN")] //  seuls les utilisateurs ayant le rôle "ROLE_ADMIN" auront la permission d'accéder à la ressource
+    // #[IsGranted("ROLE_ADMIN")] //  seuls les utilisateurs ayant le rôle "ROLE_ADMIN" auront la permission d'accéder à la ressource
     public function getUsers(AppUserRepository $AppUserRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
@@ -77,6 +77,7 @@ class UsersController extends AbstractController
     }
 
 
+
     /**
      * Get users roles by id
      *
@@ -98,6 +99,9 @@ class UsersController extends AbstractController
         return new JsonResponse($roleUser, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
+
+
+
     /**
      * Create a new user
      *
@@ -106,10 +110,23 @@ class UsersController extends AbstractController
      *     description="Created",
      * )
      * 
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="lastname", type="string"),
+     *         @OA\Property(property="firstname", type="string"),
+     *         @OA\Property(property="datebirth", type="string", format="date-time", example="2023-11-04T00:00:00+00:00"),
+     *         @OA\Property(property="email", type="string", format="email"),
+     *         @OA\Property(property="roles", type="array", @OA\Items(type="string", enum={"ROLE_COACH", "ROLE_PATIENT", "ROLE_ADMIN"}), example={"ROLE_COACH or ROLE_PATIENT"}),
+     *         @OA\Property(property="password", type="string"),
+     *     )
+     * ),
+     * 
      * @OA\Tag(name="Users")
      */
     #[Route('/api/post/users', name: "app_users_post", methods: ['POST'])]
-    public function createUsers(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasherInterface): JsonResponse
+    public function createUsers(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasherInterface, ValidatorInterface $validatorInterface): JsonResponse
     {
 
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
@@ -132,28 +149,56 @@ class UsersController extends AbstractController
         // Affectez le mot de passe haché à l'utilisateur
         $users->setPassword($hashedPassword);
 
-        // persistance des données dans la BDD
-        $entityManager->persist($users);
-        $entityManager->flush();
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($users);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // récupération du role de l'user crée
         $userRoles = $users->getRoles();
 
-        // si l'user à le role'USER' alors persistance de l'id dans l'entité Patient
-        if (in_array("ROLE_USER", $userRoles)) {
+        // si l'user à le role'PATIENT' alors persistance de l'id dans l'entité Patient et persistance des données de l'user dans AppUser
+        if (in_array("ROLE_PATIENT", $userRoles)) {
 
+            // persistance des données dans l'entité AppUser
+            $entityManager->persist($users);
+            $entityManager->flush();
+
+            // persistance de l'id  dans l'entité patient
             $patient = new Patient();
             $patient->setIdUser($users);
             $entityManager->persist($patient);
             $entityManager->flush();
 
             // sinon persistante de l'id dans l'entité Coach
-        } else {
+        } elseif (in_array("ROLE_COACH", $userRoles)) {
+
+
+            $entityManager->persist($users);
+            $entityManager->flush();
 
             $coach = new Coach();
             $coach->setIdUser($users);
             $entityManager->persist($coach);
             $entityManager->flush();
+
+        } elseif (in_array("ROLE_ADMIN", $userRoles)) {
+
+            $entityManager->persist($users);
+            $entityManager->flush();
+
+            $admin = new Admin();
+            $admin->setIdUser($users);
+            $entityManager->persist($admin);
+            $entityManager->flush();
+            
+        } else {
+
+            $responseContent = ["error" => "The selected role is incorrect"];
+
+            return new JsonResponse($responseContent, Response::HTTP_BAD_REQUEST);
         }
 
         $jsonUsers = $serializer->serialize($users, 'json');
@@ -161,6 +206,7 @@ class UsersController extends AbstractController
         // created = code 201
         return new JsonResponse($jsonUsers, Response::HTTP_CREATED, [], true);
     }
+
 
 
     /**
@@ -171,15 +217,24 @@ class UsersController extends AbstractController
      *     description="Accepted",
      * )
      * 
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="email", type="string", format="email"),
+     *         @OA\Property(property="password", type="string"),
+     *     )
+     * ),
+     * 
      * @OA\Tag(name="Users")
      */
     #[Route('/api/put/users/{id}', name: "app_users_put", methods: ['PUT'])]
-    public function updateUsers(Request $request, SerializerInterface $serializer, AppUser $appUser, UserPasswordHasherInterface $userPasswordHasherInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function updateUsers(Request $request, SerializerInterface $serializer, AppUser $appUser, UserPasswordHasherInterface $userPasswordHasherInterface, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
     {
         // AppUser::class : C'est la classe PHP vers laquelle les données JSON seront désérialisées. Dans ce cas, c'est la classe AppUser.
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser] :  permet de mettre à jour l'objet $appUser existant avec les nouvelles données, les données du JSON seront intégrées dans cet objet existant au lieu de créer un nouvel objet
         // 'ignored_attributes' : ce sont les attribus que l'on ne va pas désérialiser donc non modifiable
-        $updatedUsers = $serializer->deserialize($request->getContent(), AppUser::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth', 'dateRegistration']]);
+        $updatedUsers = $serializer->deserialize($request->getContent(), AppUser::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth', 'dateRegistration', 'roles']]);
 
         // Récupération du mot de passe 
         $password = $updatedUsers->getPassword();
@@ -190,8 +245,13 @@ class UsersController extends AbstractController
         // Affectez le mot de passe haché à l'utilisateur
         $updatedUsers->setPassword($hashedPassword);
 
-        $entityManager->persist($updatedUsers);
+        $errors = $validatorInterface->validate($updatedUsers);
 
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
+
+        $entityManager->persist($updatedUsers);
         $entityManager->flush();
 
         $jsonupdatedUsers = $serializer->serialize($updatedUsers, 'json');
@@ -203,7 +263,7 @@ class UsersController extends AbstractController
 
 
     /**
-     * Delete users
+     * Delete users coach or patient
      *
      * @OA\Response(
      *     response=204,
@@ -213,7 +273,7 @@ class UsersController extends AbstractController
      * @OA\Tag(name="Users")
      */
     #[Route('/api/users/{id}/delete', name: 'app_users_delete', methods: ['DELETE'])]
-    public function deleteUser(int $id, AppUser $appUser, CoachRepository $coachRepository, PatientRepository $patientRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): Response 
+    public function deleteUser(int $id, AppUser $appUser, CoachRepository $coachRepository, PatientRepository $patientRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): Response
     {
         // récupération du role
         $userRoles = $appUser->getRoles();
@@ -222,16 +282,17 @@ class UsersController extends AbstractController
 
             // apelle de la methode qui va supprimer le coach
             $this->deleteCoach($id, $coachRepository, $appointmentRepository, $planningRulesRepository, $availabilityRepository, $entityManager);
-            
 
-        } elseif (in_array("ROLE_USER", $userRoles)) {
+        } elseif (in_array("ROLE_PATIENT", $userRoles)) {
 
             // apelle de la methode qui va supprimer le patient
             $this->deletePatient($id, $patientRepository, $appointmentRepository, $transactionRepository, $entityManager);
 
         } else {
 
-            return new JsonResponse("The selected id is incorrect", Response::HTTP_BAD_REQUEST);
+            $responseContent = ["error" => "The selected id is incorrect"];
+
+            return new JsonResponse($responseContent, Response::HTTP_BAD_REQUEST);
         }
 
         //supression de l'user
@@ -243,7 +304,7 @@ class UsersController extends AbstractController
     }
 
 
-    private function deleteCoach(int $id, CoachRepository $coachRepository, AppointmentRepository $appointmentRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): void 
+    private function deleteCoach(int $id, CoachRepository $coachRepository, AppointmentRepository $appointmentRepository, PlanningRulesRepository $planningRulesRepository, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): void
     {
         // Supprimez la relation entre PlanningRules et Coach
         $planningRules = $planningRulesRepository->findBy(['idUser' => $id]);
@@ -266,19 +327,18 @@ class UsersController extends AbstractController
             $entityManager->remove($appointment);
         }
 
-            // suprimer le coach de l'entité coach
-            $coach = $coachRepository->findOneBy(['idUser' => $id]);
+        // suprimer le coach de l'entité coach
+        $coach = $coachRepository->findOneBy(['idUser' => $id]);
 
-            if ($coach) {
+        if ($coach) {
 
-                $entityManager->remove($coach);
-            }
+            $entityManager->remove($coach);
+        }
 
         $entityManager->flush();
-
     }
 
-    private function deletePatient(int $id, PatientRepository $patientRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): void 
+    private function deletePatient(int $id, PatientRepository $patientRepository, AppointmentRepository $appointmentRepository, TransactionRepository $transactionRepository, EntityManagerInterface $entityManager): void
     {
         // Supprimez la relation entre transaction et patient
         $transactions = $transactionRepository->findBy(['idUser' => $id]);
@@ -302,8 +362,6 @@ class UsersController extends AbstractController
         }
 
         $entityManager->flush();
-
     }
-
-
+    
 }

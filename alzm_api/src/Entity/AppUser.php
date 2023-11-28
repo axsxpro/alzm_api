@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -26,7 +27,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="app_user_id_user_seq", allocationSize=1, initialValue=1)
-     * @Groups({"patients","coach", "transaction", "course","planning","availability","appointment" })
+     * @Groups({"patients","coach", "transaction", "course","planning","availability","appointment"})
      */
     private $idUser;
 
@@ -34,6 +35,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=50, nullable=false)
+     * @Assert\NotBlank(message="Field LASTNAME cannot be blank")
      * @Groups({"patients","coach","transaction", "course","planning","availability","appointment"})
      */
     private $lastname;
@@ -42,6 +44,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=50, nullable=false)
+     * @Assert\NotBlank(message="Field FIRSTNAME cannot be blank")
      * @Groups({"patients","coach", "transaction", "course","planning", "availability","appointment"})
      */
     private $firstname;
@@ -50,6 +53,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var \DateTime
      *
      * @ORM\Column(name="datebirth", type="date", nullable=false)
+     * @Assert\NotBlank(message="Field DATEBIRTH cannot be blank")
      * @Groups({"patients","coach", "transaction", "course","planning","availability","appointment", "appointment"})
      */
     private $datebirth;
@@ -58,6 +62,11 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=50, nullable=false)
+     * @Assert\Email(
+     *     message=" The e-mail adress format is incorrect",
+     *     mode="strict"
+     * )
+     * @Assert\NotBlank(message="Field EMAIL cannot be blank")
      * @Groups({"patients","coach", "transaction","course","planning", "availability", "appointment"})
      */
     private $email;
@@ -66,6 +75,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      *
      * @ORM\Column(name="password", type="string", length=1000, nullable=true)
+     * @Assert\NotBlank(message="Field PASSWORD cannot be blank")
      * 
      */
     private $password;
@@ -90,6 +100,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var array
      *
      * @ORM\Column(name="roles", type="json", nullable=true)
+     * @Assert\NotBlank(message="Field ROLES cannot be blank")
      */
     private $roles = [];
 
@@ -195,11 +206,13 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        // $roles = $this->roles;
+        $roles = $this->roles;
 
-        // $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_USER';
 
-        return $this->roles;
+        return array_unique($roles);
+
+        // return $this->roles;
     }
 
     public function setRoles(array $roles): static

@@ -82,9 +82,9 @@ class AvailabilityController extends AbstractController
      *     required=true,
      *     @OA\JsonContent(
      *         type="object",
-     *         @OA\Property(property="dateAvailability", type="string", format="date-time"),
-     *         @OA\Property(property="hourStartSlot", type="string", format="date-time"),
-     *         @OA\Property(property="hourEndSlot", type="string", format="date-time"),
+     *         @OA\Property(property="dateAvailability", type="string", format="date-time", example="2023-12-28T10:00:00+00:00"),
+     *         @OA\Property(property="hourStartSlot", type="string", format="date-time", example="2023-12-28T10:00:00+00:00"),
+     *         @OA\Property(property="hourEndSlot", type="string", format="date-time", example="2023-12-28T10:00:00+00:00"),
      *   )
      * ),
      * 

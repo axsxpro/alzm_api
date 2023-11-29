@@ -101,7 +101,6 @@ class UsersController extends AbstractController
 
 
 
-
     /**
      * Create a new user
      *

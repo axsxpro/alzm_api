@@ -6,6 +6,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Schedule
@@ -30,6 +32,7 @@ class Schedule
      * @var \DateTime
      *
      * @ORM\Column(name="week_number", type="date", nullable=false)
+     * @Assert\NotBlank(message="Field weekNumber cannot be blank")
      * @Groups({"appointment"})
      */
     private $weekNumber;
@@ -38,6 +41,7 @@ class Schedule
      * @var int
      *
      * @ORM\Column(name="year_date", type="integer", nullable=false)
+     * @Assert\NotBlank(message="Field yearDate cannot be blank")
      * @Groups({"appointment"})
      */
     private $yearDate;
@@ -46,6 +50,7 @@ class Schedule
      * @var \DateTime
      *
      * @ORM\Column(name="hour_start_date", type="time", nullable=false)
+     * @Assert\NotBlank(message="Field hourStarDate cannot be blank")
      * @Groups({"appointment"})
      */
     private $hourStartDate;
@@ -54,6 +59,7 @@ class Schedule
      * @var \DateTime
      *
      * @ORM\Column(name="hour_end_date", type="time", nullable=false)
+     * @Assert\NotBlank(message="Field hourEndDate cannot be blank")
      * @Groups({"appointment"})
      */
     private $hourEndDate;

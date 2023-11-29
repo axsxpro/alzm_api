@@ -32,4 +32,38 @@ class AppointmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+    // on supprime un appointment en fonction de son id et l'id du coach
+    public function deleteAppointments($id, $idAppointment)
+    {
+        return $this->createQueryBuilder('appointment')
+            ->select('appointment')
+            ->where('appointment.idCoach = :id')
+            ->andWhere('appointment.idAppointment = :idAppointment')
+            ->setParameters([
+                'id' => $id,
+                'idAppointment' => $idAppointment,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult(); //récupérer un seul résultat d'une requête Doctrine
+    }
+
+
+    // Mettre à jour un rendez-vous en fonction du coach id et de l'id appointment
+    public function updateAppointments($id, $idAppointment)
+    {
+        return $this->createQueryBuilder('appointment')
+            ->select('appointment')
+            ->where('appointment.idCoach = :id')
+            ->andWhere('appointment.idAppointment = :idAppointment')
+            ->setParameters([
+                'id' => $id,
+                'idAppointment' => $idAppointment,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult(); //récupérer un seul résultat d'une requête Doctrine
+    }
+
+
 }

@@ -243,10 +243,12 @@ class UsersController extends AbstractController
 
         // Affectez le mot de passe haché à l'utilisateur
         $updatedUsers->setPassword($hashedPassword);
-
+        
+        // On vérifie les erreurs
         $errors = $validatorInterface->validate($updatedUsers);
 
         if ($errors->count() > 0) {
+
             return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 

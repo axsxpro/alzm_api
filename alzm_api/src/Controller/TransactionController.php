@@ -34,9 +34,6 @@ class TransactionController extends AbstractController
 
         $transactionsJson = $serializerInterface->serialize($transactions, 'json', ['groups' => 'transaction']);
 
-        // le code retour : ici Response::HTTP_OK  correspond au code 200 . Ce code est celui renvoyé par défaut lorsque rien n’est précisé ;
-        // [] : les headers (qu’on laisse vides pour l’instant pour garder le comportement par défaut);
-        // un true qui signifie que nous avons DÉJÀ sérialisé les données et qu’il n’y a donc plus de traitement à faire dessus. 
         return new JsonResponse($transactionsJson, Response::HTTP_OK, [], true);
     }
 

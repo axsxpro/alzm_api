@@ -145,7 +145,7 @@ class PlanController extends AbstractController
 
 
     /**
-     * Edit plans
+     * Edit plans : updates plan informations or add new avantages and/or ressources 
      *
      * @OA\Response(
      *     response=202,
@@ -182,7 +182,7 @@ class PlanController extends AbstractController
      * @OA\Tag(name="Plans")
      */
     #[Route('/api/put/plans/{id}', name: "app_plans_put", methods: ['PUT'])]
-    public function updatePlans(Request $request, Plan $plan, AdvantageRepository $advantageRepository, ResourcesRepository $resourcesRepository, serializerInterface $serializerInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function updatePlans(Request $request, Plan $plan, AdvantageRepository $advantageRepository, ResourcesRepository $resourcesRepository, serializerInterface $serializerInterface, EntityManagerInterface $entityManager): Response
     {
 
         $plan = $serializerInterface->deserialize($request->getContent(), Plan::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $plan, 'ignored_attributes' => ['idPlan']]);
@@ -190,32 +190,38 @@ class PlanController extends AbstractController
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
 
-        // Récupération de la liste des avantages dans le tableau 'advantages'
-        $advantages = $content['advantages'];
+        if (array_key_exists('advantages', $content)) {
 
-        // Pour chaque avantages
-        foreach ($advantages as $advantage) {
+            // Récupération de la liste des avantages dans le tableau 'advantages'
+            $advantages = $content['advantages'];
 
-            // Récupération de l'idAdvantage
-            $idAdvantage = $advantage['idAdvantage'];
+            // Pour chaque avantages
+            foreach ($advantages as $advantage) {
 
-            // Recherche de l'avantage par son ID dans la base de données
-            $advantageData = $advantageRepository->find($idAdvantage);
+                // Récupération de l'idAdvantage
+                $idAdvantage = $advantage['idAdvantage'];
 
-            // Si l'avantage est trouvé, l'ajouter au plan
-            if ($advantageData) {
-                $plan->addIdAdvantage($advantageData);
+                // Recherche de l'avantage par son ID dans la base de données
+                $advantageData = $advantageRepository->find($idAdvantage);
+
+                // Si l'avantage est trouvé, l'ajouter au plan
+                if ($advantageData) {
+                    $plan->addIdAdvantage($advantageData);
+                }
             }
         }
 
-        // Récupération de la liste des ressources dans le tableau 'ressources'
-        $resources = $content['resources'];
+        if (array_key_exists('resources', $content)) {
 
-        foreach ($resources as $resource) {
+            // Récupération de la liste des ressources dans le tableau 'ressources'
+            $resources = $content['resources'];
 
-            $idResource = $resource['idResources'];
+            foreach ($resources as $resource) {
 
-            $plan->addIdResource($resourcesRepository->find($idResource));
+                $idResource = $resource['idResources'];
+
+                $plan->addIdResource($resourcesRepository->find($idResource));
+            }
         }
 
         $entityManager->persist($plan);
@@ -247,6 +253,5 @@ class PlanController extends AbstractController
         return $this->redirectToRoute('app_plans', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-
-
+    
 }

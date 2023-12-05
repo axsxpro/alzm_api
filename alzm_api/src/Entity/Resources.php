@@ -23,7 +23,7 @@ class Resources
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="resources_id_resources_seq", allocationSize=1, initialValue=1)
-     *  @Groups({"plans"})
+     *  @Groups({"plans", "resources"})
      */
     private $idResources;
 
@@ -39,7 +39,7 @@ class Resources
      *     @ORM\JoinColumn(name="id_text", referencedColumnName="id_text")
      *   }
      * )
-     * @Groups({"plans"})
+     * @Groups({"plans","resources" })
      * @SerializedName("text")
      */
     private $idText = array();
@@ -56,7 +56,7 @@ class Resources
      *     @ORM\JoinColumn(name="id_files", referencedColumnName="id_files")
      *   }
      * )
-     * @Groups({"plans"})
+     * @Groups({"plans", "resources"})
      * @SerializedName("files")
      */
     private $idFiles = array();

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Advantage
@@ -32,6 +33,7 @@ class Advantage
      * @var string|null
      *
      * @ORM\Column(name="description", type="text", nullable=true)
+     * @Assert\NotBlank(message="Field DESCRIPTION cannot be blank")
      * @Groups({"plans", "advantages"})
      * 
      */

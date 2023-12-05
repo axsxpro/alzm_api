@@ -5,7 +5,9 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * Files
@@ -22,7 +24,7 @@ class Files
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="files_id_files_seq", allocationSize=1, initialValue=1)
-     * @Groups({"plans"})
+     * @Groups({"plans", "resources", "files"})
      */
     private $idFiles;
 
@@ -30,7 +32,8 @@ class Files
      * @var string
      *
      * @ORM\Column(name="link", type="string", length=50, nullable=false)
-     * @Groups({"plans"})
+     * @Assert\NotBlank(message="Field LINK cannot be blank")
+     * @Groups({"plans", "resources", "files"})
      */
     private $link;
 
@@ -38,7 +41,8 @@ class Files
      * @var string|null
      *
      * @ORM\Column(name="type", type="string", length=3, nullable=true)
-     * @Groups({"plans"})
+     * @Assert\NotBlank(message="Field TYPE cannot be blank")
+     * @Groups({"plans", "resources", "files"})
      */
     private $type;
 

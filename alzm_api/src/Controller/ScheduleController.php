@@ -86,7 +86,7 @@ class ScheduleController extends AbstractController
      * @OA\Tag(name="Schedules")
      */
     #[Route('/api/post/schedules', name: "app_schedules_post", methods: ['POST'])]
-    public function createCourses(Request $request, serializerInterface $serializerInterface, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
+    public function createSchedules(Request $request, serializerInterface $serializerInterface, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
     {
 
         $schedules = $serializerInterface->deserialize($request->getContent(), Schedule::class, 'json');
@@ -132,7 +132,7 @@ class ScheduleController extends AbstractController
      * @OA\Tag(name="Schedules")
      */
     #[Route('/api/put/schedules/{id}', name: "app_schedules_put", methods: ['PUT'])]
-    public function updateCourses(Request $request, SerializerInterface $serializer, Schedule $schedule, EntityManagerInterface $entityManager): JsonResponse
+    public function updateSchedules(Request $request, SerializerInterface $serializer, Schedule $schedule, EntityManagerInterface $entityManager): JsonResponse
     {
 
         $updatedSchedule = $serializer->deserialize($request->getContent(), Schedule::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $schedule, 'ignored_attributes' => ['idSchedule']]);
@@ -159,7 +159,7 @@ class ScheduleController extends AbstractController
      * @OA\Tag(name="Schedules")
      */
     #[Route('/api/delete/schedules/{id}', name: 'delete_schedules', methods: ['DELETE'])]
-    public function deleteCourses(int $id, Schedule $schedule, AppointmentRepository $appointmentRepository, EntityManagerInterface $entityManager): Response
+    public function deleteSchedules(int $id, Schedule $schedule, AppointmentRepository $appointmentRepository, EntityManagerInterface $entityManager): Response
     {
 
         // Supprimez la relation entre schedule  et appointment
@@ -177,4 +177,5 @@ class ScheduleController extends AbstractController
         return $this->redirectToRoute('app_schedules', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+    
 }

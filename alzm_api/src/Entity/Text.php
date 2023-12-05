@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Text
@@ -23,7 +25,7 @@ class Text
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="text_id_text_seq", allocationSize=1, initialValue=1)
-     * @Groups({"plans"})
+     * @Groups({"plans", "resources", "text"})
      */
     private $idText;
 
@@ -31,7 +33,8 @@ class Text
      * @var string|null
      *
      * @ORM\Column(name="text", type="text", nullable=true)
-     * @Groups({"plans"})
+     * @Assert\NotBlank(message="Field TEXT cannot be blank")
+     * @Groups({"plans", "resources", "text"})
      */
     private $text;
 

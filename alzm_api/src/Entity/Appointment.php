@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Appointment
@@ -34,6 +36,7 @@ class Appointment
      * })
      * @Groups({"appointment"})
      * @SerializedName("coach")
+     * @Assert\NotBlank(message="Field idCoach cannot be blank")
      */
     private $idCoach;
 
@@ -46,6 +49,7 @@ class Appointment
      * })
      * @Groups({"appointment"})
      * @SerializedName("patient")
+     * @Assert\NotBlank(message="Field idPatient cannot be blank")
      */
     private $idPatient;
 
@@ -58,6 +62,7 @@ class Appointment
      * })
      * @Groups({"appointment"})
      * @SerializedName("schedule")
+     * @Assert\NotBlank(message="Field idSchedule cannot be blank")
      */
     private $idSchedule;
 

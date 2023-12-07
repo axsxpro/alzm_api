@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AppointmentController extends AbstractController
 {
@@ -104,13 +105,20 @@ class AppointmentController extends AbstractController
      * @OA\Tag(name="Appointment")
      */
     #[Route('/api/post/appointments', name: "app_appointments_post", methods: ['POST'])]
-    public function createAppointment(Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function createAppointment(Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
         // AppUser::class: C'est la classe cible dans laquelle on veut désérialiser les données JSON
         // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
         $appointments = $serializer->deserialize($request->getContent(), Appointment::class, 'json');
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($appointments);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
@@ -164,12 +172,20 @@ class AppointmentController extends AbstractController
      * @OA\Tag(name="Appointment")
      */
     #[Route('/api/put/coachs/{id}/appointments/{idAppointment}', name: "app_appointments_put", methods: ['PUT'])]
-    public function updateAppointment(int $id, int $idAppointment, Request $request, SerializerInterface $serializer, AppointmentRepository $appointmentRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function updateAppointment(int $id, int $idAppointment, Request $request, SerializerInterface $serializer, AppointmentRepository $appointmentRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
         $appointment = $appointmentRepository->updateAppointments($id, $idAppointment);
 
         $updateAppointment = $serializer->deserialize($request->getContent(), Appointment::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appointment, 'ignored_attributes' => ['idApppointment', 'coach']]);
+
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($appointment);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
@@ -241,7 +257,4 @@ class AppointmentController extends AbstractController
         return $this->redirectToRoute('app_appointments', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-
-
-
 }

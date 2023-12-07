@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -31,6 +32,7 @@ class Availability
      * @var \DateTime
      *
      * @ORM\Column(name="date_availability", type="date", nullable=false)
+     * @Assert\NotBlank(message="Field dateAvailability cannot be blank")
      * @Groups({"availability"})
      */
     private $dateAvailability;
@@ -39,6 +41,7 @@ class Availability
      * @var \DateTime|null
      *
      * @ORM\Column(name="hour_start_slot", type="time", nullable=true)
+     * @Assert\NotBlank(message="Field hourStartSlot cannot be blank")
      * @Groups({"availability"})
      */
     private $hourStartSlot;
@@ -47,6 +50,7 @@ class Availability
      * @var \DateTime|null
      *
      * @ORM\Column(name="hour_end_slot", type="time", nullable=true)
+     * @Assert\NotBlank(message="Field hourEndSlot cannot be blank")
      * @Groups({"availability"})
      */
     private $hourEndSlot;
@@ -60,6 +64,7 @@ class Availability
      * })
      * @Groups({"availability"})
      * @SerializedName("coach")
+     * Assert\NotBlank(message="Field idUser cannot be blank")
      */
     private $idUser;
 

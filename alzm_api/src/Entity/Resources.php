@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Resources
@@ -41,6 +43,7 @@ class Resources
      * )
      * @Groups({"plans","resources" })
      * @SerializedName("text")
+     * @Assert\NotBlank(message="Field idText cannot be blank")
      */
     private $idText = array();
 
@@ -58,6 +61,7 @@ class Resources
      * )
      * @Groups({"plans", "resources"})
      * @SerializedName("files")
+     * @Assert\NotBlank(message="Field idFiles cannot be blank")
      */
     private $idFiles = array();
 

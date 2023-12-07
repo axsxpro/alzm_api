@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Transaction;
 use App\Repository\TransactionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,5 +39,24 @@ class TransactionController extends AbstractController
     }
 
 
-    
+
+    /**
+     * Get transactions by id
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="OK",
+     * )
+     * 
+     * @OA\Tag(name="Transactions")
+     */
+    #[Route('/api/transactions/{id}', name: 'transactions_id', methods: ['GET'])]
+    public function getTransactionsById(Transaction $transaction, SerializerInterface $serializer): JsonResponse
+    {
+        $transactionById = $serializer->serialize($transaction, 'json', ['groups' => 'resources']);
+
+        return new JsonResponse($transactionById, Response::HTTP_OK, ['accept' => 'json'], true);
+    }
+
+
 }

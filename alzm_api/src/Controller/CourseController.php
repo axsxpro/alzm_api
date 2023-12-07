@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CourseController extends AbstractController
 {
@@ -90,13 +90,20 @@ class CourseController extends AbstractController
      * @OA\Tag(name="Courses")
      */
     #[Route('/api/post/courses', name: "app_courses_post", methods: ['POST'])]
-    public function createCourses(Request $request, CoachRepository $coachRepository, serializerInterface $serializerInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function createCourses(Request $request, CoachRepository $coachRepository, serializerInterface $serializerInterface, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
         // Course::class: C'est la classe cible dans laquelle on veut désérialiser les données JSON
         // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
         $courses = $serializerInterface->deserialize($request->getContent(), Course::class, 'json');
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($courses);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
@@ -143,10 +150,17 @@ class CourseController extends AbstractController
      * @OA\Tag(name="Courses")
      */
     #[Route('/api/put/courses/{id}', name: "app_courses_put", methods: ['PUT'])]
-    public function updateCourses(Request $request, SerializerInterface $serializer, Course $course, EntityManagerInterface $entityManager): JsonResponse
+    public function updateCourses(Request $request, SerializerInterface $serializer, Course $course, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
         $updatedCourse = $serializer->deserialize($request->getContent(), Course::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $course, 'ignored_attributes' => ['idCourse', 'coach']]);
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($updatedCourse);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         $entityManager->persist($updatedCourse);
 

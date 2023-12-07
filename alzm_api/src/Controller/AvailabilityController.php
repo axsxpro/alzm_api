@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Annotations as OA;
-
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AvailabilityController extends AbstractController
 {
@@ -91,12 +91,20 @@ class AvailabilityController extends AbstractController
      * @OA\Tag(name="Availabilities")
      */
     #[Route('/api/post/coachs/{id}/availabilities', name: "app_availabilities_post", methods: ['POST'])]
-    public function createAvailabilities(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function createAvailabilities(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
         // AppUser::class: C'est la classe cible dans laquelle on veut désérialiser les données JSON
         // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
         $availabilities = $serializer->deserialize($request->getContent(), Availability::class, 'json');
+
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($availabilities);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // On cherche l' id du coach et on l'assigne à l'objet availabilities.
         // Si "find" ne trouve pas l' id, alors null sera retourné.
@@ -136,13 +144,20 @@ class AvailabilityController extends AbstractController
      * @OA\Tag(name="Availabilities")
      */
     #[Route('/api/put/coachs/{id}/availabilities/{idAvailability}', name: "app_availabilities_put", methods: ['PUT'])]
-    public function updateAvailabilities(int $id, int $idAvailability, Request $request, SerializerInterface $serializer, AvailabilityRepository $availabilityRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function updateAvailabilities(int $id, int $idAvailability, Request $request, SerializerInterface $serializer, AvailabilityRepository $availabilityRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
         $availability = $availabilityRepository->findAvailabilityCoachById($id, $idAvailability);
 
         // Les données JSON de la requête sont transformées en un objet 
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $availability] :  permet de mettre à jour l'objet $availability existant avec les nouvelles données.
         $updateAvailability = $serializer->deserialize($request->getContent(), Availability::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $availability, 'ignored_attributes' => ['idAvailability', 'coach']]);
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($availability);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         $entityManager->persist($updateAvailability);
 

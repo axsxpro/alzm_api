@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -33,6 +34,7 @@ class Plan
      * @var string|null
      *
      * @ORM\Column(name="name", type="string", length=50, nullable=true)
+     * @Assert\NotBlank(message="Field name cannot be blank")
      * @Groups({"plans", "patients"})
      */
     private $name;
@@ -41,6 +43,7 @@ class Plan
      * @var string|null
      *
      * @ORM\Column(name="description", type="text", nullable=true)
+     * @Assert\NotBlank(message="Field description cannot be blank")
      * @Groups({"plans", "patients"})
      */
     private $description;
@@ -49,6 +52,7 @@ class Plan
      * @var string|null
      *
      * @ORM\Column(name="cost", type="decimal", precision=15, scale=2, nullable=true)
+     * @Assert\NotBlank(message="Field cost cannot be blank")
      * @Groups({"plans","patients"})
      */
     private $cost;

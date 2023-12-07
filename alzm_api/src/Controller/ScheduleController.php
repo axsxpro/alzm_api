@@ -132,10 +132,17 @@ class ScheduleController extends AbstractController
      * @OA\Tag(name="Schedules")
      */
     #[Route('/api/put/schedules/{id}', name: "app_schedules_put", methods: ['PUT'])]
-    public function updateSchedules(Request $request, SerializerInterface $serializer, Schedule $schedule, EntityManagerInterface $entityManager): JsonResponse
+    public function updateSchedules(Request $request, SerializerInterface $serializer, Schedule $schedule, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
     {
 
         $updatedSchedule = $serializer->deserialize($request->getContent(), Schedule::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $schedule, 'ignored_attributes' => ['idSchedule']]);
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($updatedSchedule);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         $entityManager->persist($updatedSchedule);
 
@@ -177,5 +184,4 @@ class ScheduleController extends AbstractController
         return $this->redirectToRoute('app_schedules', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-    
 }

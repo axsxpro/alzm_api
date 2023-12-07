@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -34,6 +35,7 @@ class Course
      *
      * @ORM\Column(name="name", type="string", length=50, nullable=true)
      * @Groups({"coach","course"})
+     * @Assert\NotBlank(message="Field name cannot be blank")
      */
     private $name;
 
@@ -42,6 +44,7 @@ class Course
      *
      * @ORM\Column(name="description", type="string", length=50, nullable=true)
      * @Groups({"coach","course"})
+     * @Assert\NotBlank(message="Field description cannot be blank")
      */
     private $description;
 
@@ -50,6 +53,7 @@ class Course
      *
      * @ORM\Column(name="duration", type="integer", nullable=true)
      * @Groups({"coach","course"})
+     * @Assert\NotBlank(message="Field duration cannot be blank")
      */
     private $duration;
 
@@ -58,6 +62,7 @@ class Course
      *
      * @ORM\Column(name="cost", type="decimal", precision=15, scale=2, nullable=true)
      * @Groups({"coach", "course"})
+     * @Assert\NotBlank(message="Field cost cannot be blank")
      */
     private $cost;
 
@@ -68,6 +73,7 @@ class Course
      * @ORM\ManyToMany(targetEntity="Coach", mappedBy="idCourse")
      * @Groups({"course"})
      * @SerializedName("coach")
+     * @Assert\NotBlank(message="Field idUser cannot be blank")
      */
     private $idUser = array();
 

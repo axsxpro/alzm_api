@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Annotations as OA;
-
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PlanningRulesController extends AbstractController
 {
@@ -86,12 +86,20 @@ class PlanningRulesController extends AbstractController
      * @OA\Tag(name="Plannings")
      */
     #[Route('/api/post/coachs/{id}/plannings', name: "app_plannings_post", methods: ['POST'])]
-    public function createPlannings(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function createPlannings(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
         // PlanningRules::class : C'est la classe cible dans laquelle on veut désérialiser les données JSON
         // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
         $planningRules = $serializer->deserialize($request->getContent(), PlanningRules::class, 'json');
+
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($planningRules);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // On cherche l' id du coach et on l'assigne à l'objet PlanningsRules.
         // Si "find" ne trouve pas l'id, alors null sera retourné.
@@ -133,13 +141,21 @@ class PlanningRulesController extends AbstractController
      * @OA\Tag(name="Plannings")
      */
     #[Route('/api/put/coachs/{id}/plannings/{idPlanning}', name: "app_plannings_put", methods: ['PUT'])]
-    public function updatePlannings(int $id, int $idPlanning, Request $request, SerializerInterface $serializer, PlanningRulesRepository $planningRulesRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function updatePlannings(int $id, int $idPlanning, Request $request, SerializerInterface $serializer, PlanningRulesRepository $planningRulesRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
         $planningRules = $planningRulesRepository->findPlanningByCoachId($id, $idPlanning);
 
         // Les données JSON de la requête sont transformées en un objet 
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $availability] :  permet de mettre à jour l'objet $availability existant avec les nouvelles données.
         $updatePlanning = $serializer->deserialize($request->getContent(), PlanningRules::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $planningRules, 'ignored_attributes' => ['idPlanningRules', 'coach']]);
+
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($planningRules);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         $entityManager->persist($updatePlanning);
 

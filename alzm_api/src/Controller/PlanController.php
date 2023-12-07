@@ -15,6 +15,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+
 
 class PlanController extends AbstractController
 {
@@ -98,10 +101,17 @@ class PlanController extends AbstractController
      * @OA\Tag(name="Plans")
      */
     #[Route('/api/post/plans', name: "app_plans_post", methods: ['POST'])]
-    public function createPlans(Request $request, AdvantageRepository $advantageRepository, ResourcesRepository $resourcesRepository, serializerInterface $serializerInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function createPlans(Request $request, AdvantageRepository $advantageRepository, ResourcesRepository $resourcesRepository, serializerInterface $serializerInterface, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
         $plan = $serializerInterface->deserialize($request->getContent(), Plan::class, 'json');
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($plan);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
@@ -182,10 +192,17 @@ class PlanController extends AbstractController
      * @OA\Tag(name="Plans")
      */
     #[Route('/api/put/plans/{id}', name: "app_plans_put", methods: ['PUT'])]
-    public function updatePlans(Request $request, Plan $plan, AdvantageRepository $advantageRepository, ResourcesRepository $resourcesRepository, serializerInterface $serializerInterface, EntityManagerInterface $entityManager): Response
+    public function updatePlans(Request $request, Plan $plan, AdvantageRepository $advantageRepository, ResourcesRepository $resourcesRepository, serializerInterface $serializerInterface, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): Response
     {
 
         $plan = $serializerInterface->deserialize($request->getContent(), Plan::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $plan, 'ignored_attributes' => ['idPlan']]);
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($plan);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
@@ -253,5 +270,4 @@ class PlanController extends AbstractController
         return $this->redirectToRoute('app_plans', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-    
 }

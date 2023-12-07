@@ -35,7 +35,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=50, nullable=false)
-     * @Assert\NotBlank(message="Field LASTNAME cannot be blank")
+     * @Assert\NotBlank(message="Field lastname cannot be blank")
      * @Groups({"patients","coach","transaction", "course","planning","availability","appointment"})
      */
     private $lastname;
@@ -44,7 +44,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=50, nullable=false)
-     * @Assert\NotBlank(message="Field FIRSTNAME cannot be blank")
+     * @Assert\NotBlank(message="Field firstname cannot be blank")
      * @Groups({"patients","coach", "transaction", "course","planning", "availability","appointment"})
      */
     private $firstname;
@@ -53,7 +53,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var \DateTime
      *
      * @ORM\Column(name="datebirth", type="date", nullable=false)
-     * @Assert\NotBlank(message="Field DATEBIRTH cannot be blank")
+     * @Assert\NotBlank(message="Field datebirth cannot be blank")
      * @Groups({"patients","coach", "transaction", "course","planning","availability","appointment", "appointment"})
      */
     private $datebirth;
@@ -66,7 +66,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      *     message=" The e-mail adress format is incorrect",
      *     mode="strict"
      * )
-     * @Assert\NotBlank(message="Field EMAIL cannot be blank")
+     * @Assert\NotBlank(message="Field email cannot be blank")
      * @Groups({"patients","coach", "transaction","course","planning", "availability", "appointment"})
      */
     private $email;
@@ -75,7 +75,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      *
      * @ORM\Column(name="password", type="string", length=1000, nullable=true)
-     * @Assert\NotBlank(message="Field PASSWORD cannot be blank")
+     * @Assert\NotBlank(message="Field password cannot be blank")
      * 
      */
     private $password;
@@ -100,7 +100,7 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
      * @var array
      *
      * @ORM\Column(name="roles", type="json", nullable=true)
-     * @Assert\NotBlank(message="Field ROLES cannot be blank")
+     * @Assert\NotBlank(message="Field roles cannot be blank")
      */
     private $roles = [];
 

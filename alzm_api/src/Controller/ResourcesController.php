@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ResourcesController extends AbstractController
 {
@@ -85,10 +86,17 @@ class ResourcesController extends AbstractController
      * @OA\Tag(name="Resources")
      */
     #[Route('/api/post/resources', name: "app_resources_post", methods: ['POST'])]
-    public function createPlans(Request $request, FilesRepository $filesRepository, TextRepository $textRepository, serializerInterface $serializerInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function createPlans(Request $request, FilesRepository $filesRepository, TextRepository $textRepository, serializerInterface $serializerInterface, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
         $resource = $serializerInterface->deserialize($request->getContent(), Resources::class, 'json');
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($resource);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
@@ -157,10 +165,17 @@ class ResourcesController extends AbstractController
      * @OA\Tag(name="Resources")
      */
     #[Route('/api/put/resources/{id}', name: "app_resources_put", methods: ['PUT'])]
-    public function updateResources(Request $request, Resources $resources, FilesRepository $filesRepository, TextRepository $textRepository, serializerInterface $serializerInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function updateResources(Request $request, Resources $resources, FilesRepository $filesRepository, TextRepository $textRepository, serializerInterface $serializerInterface, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
         $resource = $serializerInterface->deserialize($request->getContent(), Resources::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $resources, 'ignored_attributes' => ['idResources']]);
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($resource);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
@@ -203,7 +218,7 @@ class ResourcesController extends AbstractController
     }
 
 
-    
+
     /**
      * Delete resources
      *
@@ -226,7 +241,4 @@ class ResourcesController extends AbstractController
     }
 
 
-
 }
-
-

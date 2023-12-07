@@ -33,7 +33,7 @@ class Text
      * @var string|null
      *
      * @ORM\Column(name="text", type="text", nullable=true)
-     * @Assert\NotBlank(message="Field TEXT cannot be blank")
+     * @Assert\NotBlank(message="Field text cannot be blank")
      * @Groups({"plans", "resources", "text"})
      */
     private $text;

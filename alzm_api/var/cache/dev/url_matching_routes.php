@@ -26,6 +26,8 @@ return [
         '/api/post/courses' => [[['_route' => 'app_courses_post', '_controller' => 'App\\Controller\\CourseController::createCourses'], null, ['POST' => 0], null, false, false, null]],
         '/api/files' => [[['_route' => 'app_files', '_controller' => 'App\\Controller\\FilesController::getFiles'], null, ['GET' => 0], null, false, false, null]],
         '/api/post/files' => [[['_route' => 'app_files_post', '_controller' => 'App\\Controller\\FilesController::createFiles'], null, ['POST' => 0], null, false, false, null]],
+        '/connect/google' => [[['_route' => 'connect_google', '_controller' => 'App\\Controller\\GoogleOAuthController::connectAction'], null, null, null, false, false, null]],
+        '/connect/google/check' => [[['_route' => 'connect_google_check', '_controller' => 'App\\Controller\\GoogleOAuthController::connectCheckAction'], null, null, null, false, false, null]],
         '/home' => [[['_route' => 'home', '_controller' => 'App\\Controller\\HomePageController::index'], null, null, null, false, false, null]],
         '/api/patients' => [[['_route' => 'app_all_patient', '_controller' => 'App\\Controller\\PatientController::getPatients'], null, ['GET' => 0], null, false, false, null]],
         '/api/plans' => [[['_route' => 'app_plans', '_controller' => 'App\\Controller\\PlanController::getPlans'], null, ['GET' => 0], null, false, false, null]],
@@ -138,12 +140,15 @@ return [
                     .'|files/([^/]++)(*:1234)'
                     .'|resources/([^/]++)(*:1261)'
                     .'|schedules/([^/]++)(*:1288)'
-                    .'|text/([^/]++)(*:1310)'
+                    .'|t(?'
+                        .'|ext/([^/]++)(*:1313)'
+                        .'|ransactions/([^/]++)(*:1342)'
+                    .')'
                     .'|users/([^/]++)(?'
-                        .'|(*:1336)'
+                        .'|(*:1369)'
                         .'|/(?'
-                            .'|roles(*:1354)'
-                            .'|delete(*:1369)'
+                            .'|roles(*:1387)'
+                            .'|delete(*:1402)'
                         .')'
                     .')'
                 .')'
@@ -197,10 +202,11 @@ return [
         1234 => [[['_route' => 'app_files_id', '_controller' => 'App\\Controller\\FilesController::getFilesbyId'], ['id'], ['GET' => 0], null, false, true, null]],
         1261 => [[['_route' => 'resources_id', '_controller' => 'App\\Controller\\ResourcesController::getResourcesById'], ['id'], ['GET' => 0], null, false, true, null]],
         1288 => [[['_route' => 'schedule_id', '_controller' => 'App\\Controller\\ScheduleController::getScheduleById'], ['id'], ['GET' => 0], null, false, true, null]],
-        1310 => [[['_route' => 'app_text_id', '_controller' => 'App\\Controller\\TextController::getTextbyId'], ['id'], ['GET' => 0], null, false, true, null]],
-        1336 => [[['_route' => 'users_id', '_controller' => 'App\\Controller\\UsersController::getUserById'], ['id'], ['GET' => 0], null, false, true, null]],
-        1354 => [[['_route' => 'users_id_roles', '_controller' => 'App\\Controller\\UsersController::getRoleById'], ['id'], ['GET' => 0], null, false, false, null]],
-        1369 => [
+        1313 => [[['_route' => 'app_text_id', '_controller' => 'App\\Controller\\TextController::getTextbyId'], ['id'], ['GET' => 0], null, false, true, null]],
+        1342 => [[['_route' => 'transactions_id', '_controller' => 'App\\Controller\\TransactionController::getTransactionsById'], ['id'], ['GET' => 0], null, false, true, null]],
+        1369 => [[['_route' => 'users_id', '_controller' => 'App\\Controller\\UsersController::getUserById'], ['id'], ['GET' => 0], null, false, true, null]],
+        1387 => [[['_route' => 'users_id_roles', '_controller' => 'App\\Controller\\UsersController::getRoleById'], ['id'], ['GET' => 0], null, false, false, null]],
+        1402 => [
             [['_route' => 'app_users_delete', '_controller' => 'App\\Controller\\UsersController::deleteUser'], ['id'], ['DELETE' => 0], null, false, false, null],
             [null, null, null, null, false, false, 0],
         ],

@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * PlanningRules
@@ -30,6 +31,7 @@ class PlanningRules
      * @var \DateTime|null
      *
      * @ORM\Column(name="minimal_time_slot", type="time", nullable=true)
+     * @Assert\NotBlank(message="Field minimalTimeSlot cannot be blank")
      * @Groups({"planning"})
      */
     private $minimalTimeSlot;
@@ -38,6 +40,7 @@ class PlanningRules
      * @var \DateTime|null
      *
      * @ORM\Column(name="maximal_time_slot", type="time", nullable=true)
+     * @Assert\NotBlank(message="Field maximalTimeSlot cannot be blank")
      * @Groups({"planning"})
      */
     private $maximalTimeSlot;
@@ -46,6 +49,7 @@ class PlanningRules
      * @var string|null
      *
      * @ORM\Column(name="work_days", type="string", length=7, nullable=true)
+     * @Assert\NotBlank(message="Field workDays cannot be blank")
      * @Groups({"planning"})
      */
     private $workDays;
@@ -54,6 +58,7 @@ class PlanningRules
      * @var \DateTime|null
      *
      * @ORM\Column(name="work_hours_start", type="time", nullable=true)
+     * @Assert\NotBlank(message="Field workHoursStart cannot be blank")
      * @Groups({"planning"})
      */
     private $workHoursStart;
@@ -62,6 +67,7 @@ class PlanningRules
      * @var \DateTime|null
      *
      * @ORM\Column(name="work_hours_end", type="time", nullable=true)
+     * @Assert\NotBlank(message="Field workHoursEnd cannot be blank")
      * @Groups({"planning"})
      */
     private $workHoursEnd;
@@ -70,6 +76,7 @@ class PlanningRules
      * @var string|null
      *
      * @ORM\Column(name="time_between_appointments", type="string", nullable=true)
+     * @Assert\NotBlank(message="Field timeBetweenAppointments cannot be blank")
      * @Groups({"planning"})
      */
     private $timeBetweenAppointments;
@@ -83,6 +90,7 @@ class PlanningRules
      * })
      * @Groups({"planning"})
      * @SerializedName("coach")
+     * @Assert\NotBlank(message="Field idUser cannot be blank")
      */
     private $idUser;
 

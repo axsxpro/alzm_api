@@ -32,7 +32,7 @@ class Files
      * @var string
      *
      * @ORM\Column(name="link", type="string", length=50, nullable=false)
-     * @Assert\NotBlank(message="Field LINK cannot be blank")
+     * @Assert\NotBlank(message="Field link cannot be blank")
      * @Groups({"plans", "resources", "files"})
      */
     private $link;
@@ -41,7 +41,7 @@ class Files
      * @var string|null
      *
      * @ORM\Column(name="type", type="string", length=3, nullable=true)
-     * @Assert\NotBlank(message="Field TYPE cannot be blank")
+     * @Assert\NotBlank(message="Field type cannot be blank")
      * @Groups({"plans", "resources", "files"})
      */
     private $type;

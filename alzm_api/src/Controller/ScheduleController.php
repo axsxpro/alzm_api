@@ -35,12 +35,8 @@ class ScheduleController extends AbstractController
 
         $schedules = $scheduleRepository->findAll();
 
-        // serialisation : convertir  des objets en chaine de caractères
         $schedulesJson = $serializerInterface->serialize($schedules, 'json');
 
-        // le code retour : Response::HTTP_OK :  correspond au code 200
-        // [] : les headers (qu’on laisse vides pour l’instant pour garder le comportement par défaut);
-        // true : indique que la réponse JSON doit être mise en forme en utilisant la mise en forme JSON "pretty"
         return new JsonResponse($schedulesJson, Response::HTTP_OK, [], true);
     }
 
@@ -56,9 +52,9 @@ class ScheduleController extends AbstractController
      * @OA\Tag(name="Schedules")
      */
     #[Route('/api/schedules/{id}', name: 'schedule_id', methods: ['GET'])]
-    public function getScheduleById(Schedule $schedule, SerializerInterface $serializer): JsonResponse
+    public function getScheduleById(Schedule $schedule, SerializerInterface $serializerInterface): JsonResponse
     {
-        $scheduleById = $serializer->serialize($schedule, 'json');
+        $scheduleById = $serializerInterface->serialize($schedule, 'json');
 
         return new JsonResponse($scheduleById, Response::HTTP_OK, ['accept' => 'json'], true);
     }
@@ -132,23 +128,23 @@ class ScheduleController extends AbstractController
      * @OA\Tag(name="Schedules")
      */
     #[Route('/api/put/schedules/{id}', name: "app_schedules_put", methods: ['PUT'])]
-    public function updateSchedules(Request $request, SerializerInterface $serializer, Schedule $schedule, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
+    public function updateSchedules(Request $request, SerializerInterface $serializerInterface, Schedule $schedule, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
     {
 
-        $updatedSchedule = $serializer->deserialize($request->getContent(), Schedule::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $schedule, 'ignored_attributes' => ['idSchedule']]);
+        $updatedSchedule = $serializerInterface->deserialize($request->getContent(), Schedule::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $schedule, 'ignored_attributes' => ['idSchedule']]);
 
         // On vérifie les erreurs
         $errors = $validatorInterface->validate($updatedSchedule);
 
         if ($errors->count() > 0) {
-            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         $entityManager->persist($updatedSchedule);
 
         $entityManager->flush();
 
-        $jsonUpdatedSchedule = $serializer->serialize($updatedSchedule, 'json');
+        $jsonUpdatedSchedule = $serializerInterface->serialize($updatedSchedule, 'json');
 
         // accepted = code 202
         return new JsonResponse($jsonUpdatedSchedule, JsonResponse::HTTP_ACCEPTED, [], true);
@@ -184,4 +180,5 @@ class ScheduleController extends AbstractController
         return $this->redirectToRoute('app_schedules', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+    
 }

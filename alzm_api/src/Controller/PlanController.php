@@ -55,9 +55,9 @@ class PlanController extends AbstractController
      * @OA\Tag(name="Plans")
      */
     #[Route('/api/plans/{id}', name: 'plans_id', methods: ['GET'])]
-    public function getPlanById(Plan $plan, SerializerInterface $serializer): JsonResponse
+    public function getPlanById(Plan $plan, SerializerInterface $serializerInterface): JsonResponse
     {
-        $planById = $serializer->serialize($plan, 'json', ['groups' => 'plans']);
+        $planById = $serializerInterface->serialize($plan, 'json', ['groups' => 'plans']);
 
         return new JsonResponse($planById, Response::HTTP_OK, ['accept' => 'json'], true);
     }
@@ -207,6 +207,7 @@ class PlanController extends AbstractController
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
 
+        // condition si la clé 'advantages' est présente dans le tableau $content
         if (array_key_exists('advantages', $content)) {
 
             // Récupération de la liste des avantages dans le tableau 'advantages'
@@ -228,6 +229,7 @@ class PlanController extends AbstractController
             }
         }
 
+        // condition si la clé 'resources' est présente dans le tableau $content
         if (array_key_exists('resources', $content)) {
 
             // Récupération de la liste des ressources dans le tableau 'ressources'
@@ -261,7 +263,7 @@ class PlanController extends AbstractController
      * @OA\Tag(name="Plans")
      */
     #[Route('/api/delete/plans/{id}', name: 'delete_plans', methods: ['DELETE'])]
-    public function deleteCourses(Plan $plan, EntityManagerInterface $entityManager): Response
+    public function deletePlans(Plan $plan, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($plan);
 
@@ -270,4 +272,5 @@ class PlanController extends AbstractController
         return $this->redirectToRoute('app_plans', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+
 }

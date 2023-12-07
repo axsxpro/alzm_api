@@ -32,14 +32,10 @@ class CourseController extends AbstractController
     #[Route('/api/courses', name: 'app_courses', methods: ['GET'])]
     public function getCourses(CourseRepository $courseRepository, SerializerInterface $serializerInterface): JsonResponse
     {
-
         $courses = $courseRepository->findAll();
 
         $coursesJson = $serializerInterface->serialize($courses, 'json', ['groups' => 'course']);
 
-        // le code retour : ici Response::HTTP_OK  correspond au code 200 . Ce code est celui renvoyé par défaut lorsque rien n’est précisé ;
-        // [] : les headers (qu’on laisse vides pour l’instant pour garder le comportement par défaut);
-        // un true qui signifie que nous avons DÉJÀ sérialisé les données et qu’il n’y a donc plus de traitement à faire dessus. 
         return new JsonResponse($coursesJson, Response::HTTP_OK, [], true);
     }
 
@@ -57,7 +53,6 @@ class CourseController extends AbstractController
     #[Route('/api/courses/{id}', name: 'app_courses_id', methods: ['GET'])]
     public function getCoursesbyId(Course $course, SerializerInterface $serializerInterface): JsonResponse
     {
-
         $courseById = $serializerInterface->serialize($course, 'json', ['groups' => 'course']);
 
         return new JsonResponse($courseById, Response::HTTP_OK, ['accept' => 'json'], true);
@@ -92,10 +87,7 @@ class CourseController extends AbstractController
     #[Route('/api/post/courses', name: "app_courses_post", methods: ['POST'])]
     public function createCourses(Request $request, CoachRepository $coachRepository, serializerInterface $serializerInterface, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
-
-        // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
-        // Course::class: C'est la classe cible dans laquelle on veut désérialiser les données JSON
-        // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
+    
         $courses = $serializerInterface->deserialize($request->getContent(), Course::class, 'json');
 
         // On vérifie les erreurs
@@ -150,23 +142,23 @@ class CourseController extends AbstractController
      * @OA\Tag(name="Courses")
      */
     #[Route('/api/put/courses/{id}', name: "app_courses_put", methods: ['PUT'])]
-    public function updateCourses(Request $request, SerializerInterface $serializer, Course $course, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function updateCourses(Request $request, SerializerInterface $serializerInterface, Course $course, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
-        $updatedCourse = $serializer->deserialize($request->getContent(), Course::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $course, 'ignored_attributes' => ['idCourse', 'coach']]);
+        $updatedCourse = $serializerInterface->deserialize($request->getContent(), Course::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $course, 'ignored_attributes' => ['idCourse', 'coach']]);
 
         // On vérifie les erreurs
         $errors = $validatorInterface->validate($updatedCourse);
 
         if ($errors->count() > 0) {
-            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         $entityManager->persist($updatedCourse);
 
         $entityManager->flush();
 
-        $jsonUpdatedCourse = $serializer->serialize($updatedCourse, 'json', ['groups' => 'course']);
+        $jsonUpdatedCourse = $serializerInterface->serialize($updatedCourse, 'json', ['groups' => 'course']);
 
         // accepted = code 202
         return new JsonResponse($jsonUpdatedCourse, JsonResponse::HTTP_ACCEPTED, [], true);

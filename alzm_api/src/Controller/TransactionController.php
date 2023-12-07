@@ -51,9 +51,9 @@ class TransactionController extends AbstractController
      * @OA\Tag(name="Transactions")
      */
     #[Route('/api/transactions/{id}', name: 'transactions_id', methods: ['GET'])]
-    public function getTransactionsById(Transaction $transaction, SerializerInterface $serializer): JsonResponse
+    public function getTransactionsById(Transaction $transaction, SerializerInterface $serializerInterface): JsonResponse
     {
-        $transactionById = $serializer->serialize($transaction, 'json', ['groups' => 'resources']);
+        $transactionById = $serializerInterface->serialize($transaction, 'json', ['groups' => 'transaction']);
 
         return new JsonResponse($transactionById, Response::HTTP_OK, ['accept' => 'json'], true);
     }

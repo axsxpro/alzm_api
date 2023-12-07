@@ -28,6 +28,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+
+
 class UsersController extends AbstractController
 {
 
@@ -69,9 +71,9 @@ class UsersController extends AbstractController
      * @OA\Tag(name="Users")
      */
     #[Route('/api/users/{id}', name: 'users_id', methods: ['GET'])]
-    public function getUserById(AppUser $appUser, SerializerInterface $serializer): JsonResponse
+    public function getUserById(AppUser $appUser, SerializerInterface $serializerInterface): JsonResponse
     {
-        $userbyid = $serializer->serialize($appUser, 'json');
+        $userbyid = $serializerInterface->serialize($appUser, 'json');
 
         return new JsonResponse($userbyid, Response::HTTP_OK, ['accept' => 'json'], true);
     }
@@ -89,12 +91,12 @@ class UsersController extends AbstractController
      * @OA\Tag(name="Users")
      */
     #[Route('/api/users/{id}/roles', name: 'users_id_roles', methods: ['GET'])] // Récupération du role d'un user
-    public function getRoleById(int $id, AppUserRepository $appUserRepository, SerializerInterface $serializer): JsonResponse
+    public function getRoleById(int $id, AppUserRepository $appUserRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
         $idUser = $appUserRepository->findUserRoleById($id);
 
-        $roleUser = $serializer->serialize($idUser, 'json');
+        $roleUser = $serializerInterface->serialize($idUser, 'json');
 
         return new JsonResponse($roleUser, Response::HTTP_OK, ['accept' => 'json'], true);
     }
@@ -125,13 +127,13 @@ class UsersController extends AbstractController
      * @OA\Tag(name="Users")
      */
     #[Route('/api/post/users', name: "app_users_post", methods: ['POST'])]
-    public function createUsers(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasherInterface, ValidatorInterface $validatorInterface): JsonResponse
+    public function createUsers(Request $request, SerializerInterface $serializerInterface, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasherInterface, ValidatorInterface $validatorInterface): JsonResponse
     {
 
         // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
         // AppUser::class: C'est la classe cible dans laquelle on veut désérialiser les données JSON
         // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
-        $users = $serializer->deserialize($request->getContent(), AppUser::class, 'json');
+        $users = $serializerInterface->deserialize($request->getContent(), AppUser::class, 'json');
 
         // récupération de la date 
         $users->getDateRegistration();
@@ -152,7 +154,7 @@ class UsersController extends AbstractController
         $errors = $validatorInterface->validate($users);
 
         if ($errors->count() > 0) {
-            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         // récupération du role de l'user crée
@@ -200,7 +202,7 @@ class UsersController extends AbstractController
             return new JsonResponse($responseContent, Response::HTTP_BAD_REQUEST);
         }
 
-        $jsonUsers = $serializer->serialize($users, 'json');
+        $jsonUsers = $serializerInterface->serialize($users, 'json');
 
         // created = code 201
         return new JsonResponse($jsonUsers, Response::HTTP_CREATED, [], true);
@@ -228,12 +230,20 @@ class UsersController extends AbstractController
      * @OA\Tag(name="Users")
      */
     #[Route('/api/put/users/{id}', name: "app_users_put", methods: ['PUT'])]
-    public function updateUsers(Request $request, SerializerInterface $serializer, AppUser $appUser, UserPasswordHasherInterface $userPasswordHasherInterface, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
+    public function updateUsers(Request $request, SerializerInterface $serializerInterface, AppUser $appUser, UserPasswordHasherInterface $userPasswordHasherInterface, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
     {
         // AppUser::class : C'est la classe PHP vers laquelle les données JSON seront désérialisées. Dans ce cas, c'est la classe AppUser.
         // [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser] :  permet de mettre à jour l'objet $appUser existant avec les nouvelles données, les données du JSON seront intégrées dans cet objet existant au lieu de créer un nouvel objet
         // 'ignored_attributes' : ce sont les attribus que l'on ne va pas désérialiser donc non modifiable
-        $updatedUsers = $serializer->deserialize($request->getContent(), AppUser::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth', 'dateRegistration', 'roles']]);
+        $updatedUsers = $serializerInterface->deserialize($request->getContent(), AppUser::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appUser, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth', 'dateRegistration', 'roles']]);
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($updatedUsers);
+
+        if ($errors->count() > 0) {
+
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // Récupération du mot de passe 
         $password = $updatedUsers->getPassword();
@@ -244,18 +254,11 @@ class UsersController extends AbstractController
         // Affectez le mot de passe haché à l'utilisateur
         $updatedUsers->setPassword($hashedPassword);
         
-        // On vérifie les erreurs
-        $errors = $validatorInterface->validate($updatedUsers);
-
-        if ($errors->count() > 0) {
-
-            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
-        }
 
         $entityManager->persist($updatedUsers);
         $entityManager->flush();
 
-        $jsonupdatedUsers = $serializer->serialize($updatedUsers, 'json');
+        $jsonupdatedUsers = $serializerInterface->serialize($updatedUsers, 'json');
 
         // accepted = code 202
         return new JsonResponse($jsonupdatedUsers, JsonResponse::HTTP_ACCEPTED, [], true);

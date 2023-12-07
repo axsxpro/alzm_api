@@ -59,16 +59,16 @@ class AdminController extends AbstractController
      * @OA\Tag(name="Admin")
      */
     #[Route('/api/put/admin/{id}', name: "app_admin_put", methods: ['PUT'])]
-    public function updateAdmin(Request $request, SerializerInterface $serializer, Admin $admin, EntityManagerInterface $entityManager): JsonResponse
+    public function updateAdmin(Request $request, SerializerInterface $serializerInterface, Admin $admin, EntityManagerInterface $entityManager): JsonResponse
     {
 
-        $updatedAdmin = $serializer->deserialize($request->getContent(), Admin::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $admin, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth', 'dateRegistration', 'roles']]);
+        $updatedAdmin = $serializerInterface->deserialize($request->getContent(), Admin::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $admin, 'ignored_attributes' => ['idUser', 'lastname', 'firstname', 'datebirth', 'dateRegistration', 'roles']]);
 
         $entityManager->persist($updatedAdmin);
 
         $entityManager->flush();
 
-        $jsonUpdatedAdmin = $serializer->serialize($updatedAdmin, 'json');
+        $jsonUpdatedAdmin = $serializerInterface->serialize($updatedAdmin, 'json');
 
         // accepted = code 202
         return new JsonResponse($jsonUpdatedAdmin, JsonResponse::HTTP_ACCEPTED, [], true);

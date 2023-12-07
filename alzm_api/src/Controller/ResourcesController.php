@@ -52,9 +52,9 @@ class ResourcesController extends AbstractController
      * @OA\Tag(name="Resources")
      */
     #[Route('/api/resources/{id}', name: 'resources_id', methods: ['GET'])]
-    public function getResourcesById(Resources $resources, SerializerInterface $serializer): JsonResponse
+    public function getResourcesById(Resources $resources, SerializerInterface $serializerInterface): JsonResponse
     {
-        $resourcesById = $serializer->serialize($resources, 'json', ['groups' => 'resources']);
+        $resourcesById = $serializerInterface->serialize($resources, 'json', ['groups' => 'resources']);
 
         return new JsonResponse($resourcesById, Response::HTTP_OK, ['accept' => 'json'], true);
     }
@@ -86,7 +86,7 @@ class ResourcesController extends AbstractController
      * @OA\Tag(name="Resources")
      */
     #[Route('/api/post/resources', name: "app_resources_post", methods: ['POST'])]
-    public function createPlans(Request $request, FilesRepository $filesRepository, TextRepository $textRepository, serializerInterface $serializerInterface, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function createResources(Request $request, FilesRepository $filesRepository, TextRepository $textRepository, serializerInterface $serializerInterface, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
         $resource = $serializerInterface->deserialize($request->getContent(), Resources::class, 'json');

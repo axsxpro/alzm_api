@@ -36,14 +36,10 @@ class AppointmentController extends AbstractController
     public function getAppointments(AppointmentRepository $appointmentRepository, SerializerInterface $serializerInterface): JsonResponse
     {
 
-        // afficher tous les utilisateurs de la base de données
         $appointments = $appointmentRepository->findAll();
 
         $appointmentsJson = $serializerInterface->serialize($appointments, 'json', ['groups' => 'appointment']);
 
-        // le code retour : ici Response::HTTP_OK  correspond au code 200 . Ce code est celui renvoyé par défaut lorsque rien n’est précisé ;
-        // [] : les headers (qu’on laisse vides pour l’instant pour garder le comportement par défaut);
-        // un true qui signifie que nous avons DÉJÀ sérialisé les données et qu’il n’y a donc plus de traitement à faire dessus. 
         return new JsonResponse($appointmentsJson, Response::HTTP_OK, [], true);
     }
 
@@ -67,9 +63,6 @@ class AppointmentController extends AbstractController
 
         $appointmentCoachJson = $serializerInterface->serialize($appointmentByCoachId, 'json', ['groups' => 'appointment']);
 
-        // le code retour : ici Response::HTTP_OK  correspond au code 200 . Ce code est celui renvoyé par défaut lorsque rien n’est précisé ;
-        // [] : les headers (qu’on laisse vides pour l’instant pour garder le comportement par défaut);
-        // un true qui signifie que nous avons DÉJÀ sérialisé les données et qu’il n’y a donc plus de traitement à faire dessus. 
         return new JsonResponse($appointmentCoachJson, Response::HTTP_OK, [], true);
     }
 
@@ -105,19 +98,16 @@ class AppointmentController extends AbstractController
      * @OA\Tag(name="Appointment")
      */
     #[Route('/api/post/appointments', name: "app_appointments_post", methods: ['POST'])]
-    public function createAppointment(Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function createAppointment(Request $request, SerializerInterface $serializerInterface, CoachRepository $coachRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
-        // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
-        // AppUser::class: C'est la classe cible dans laquelle on veut désérialiser les données JSON
-        // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
-        $appointments = $serializer->deserialize($request->getContent(), Appointment::class, 'json');
+        $appointments = $serializerInterface->deserialize($request->getContent(), Appointment::class, 'json');
 
         // On vérifie les erreurs
         $errors = $validatorInterface->validate($appointments);
 
         if ($errors->count() > 0) {
-            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
@@ -139,7 +129,7 @@ class AppointmentController extends AbstractController
 
         $entityManager->flush();
 
-        $jsonAppointments = $serializer->serialize($appointments, 'json', ['groups' => 'appointment']);
+        $jsonAppointments = $serializerInterface->serialize($appointments, 'json', ['groups' => 'appointment']);
 
         // created = code 201
         return new JsonResponse($jsonAppointments, Response::HTTP_CREATED, [], true);
@@ -172,19 +162,19 @@ class AppointmentController extends AbstractController
      * @OA\Tag(name="Appointment")
      */
     #[Route('/api/put/coachs/{id}/appointments/{idAppointment}', name: "app_appointments_put", methods: ['PUT'])]
-    public function updateAppointment(int $id, int $idAppointment, Request $request, SerializerInterface $serializer, AppointmentRepository $appointmentRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function updateAppointment(int $id, int $idAppointment, Request $request, SerializerInterface $serializerInterface, AppointmentRepository $appointmentRepository, PatientRepository $patientRepository, ScheduleRepository $scheduleRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
 
         $appointment = $appointmentRepository->updateAppointments($id, $idAppointment);
 
-        $updateAppointment = $serializer->deserialize($request->getContent(), Appointment::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appointment, 'ignored_attributes' => ['idApppointment', 'coach']]);
+        $updateAppointment = $serializerInterface->deserialize($request->getContent(), Appointment::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appointment, 'ignored_attributes' => ['idApppointment', 'coach']]);
 
 
         // On vérifie les erreurs
         $errors = $validatorInterface->validate($appointment);
 
         if ($errors->count() > 0) {
-            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
@@ -204,7 +194,7 @@ class AppointmentController extends AbstractController
 
         $entityManager->flush();
 
-        $jsonAppointment = $serializer->serialize($updateAppointment, 'json', ['groups' => 'appointment']);
+        $jsonAppointment = $serializerInterface->serialize($updateAppointment, 'json', ['groups' => 'appointment']);
 
         // created = code 201
         return new JsonResponse($jsonAppointment, Response::HTTP_CREATED, [], true);

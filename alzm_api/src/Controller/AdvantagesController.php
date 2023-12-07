@@ -15,6 +15,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
+
+
 class AdvantagesController extends AbstractController
 {
 
@@ -31,7 +33,6 @@ class AdvantagesController extends AbstractController
     #[Route('/api/advantages/', name: 'app_advantages', methods: ['GET'])]
     public function getAdvantages(AdvantageRepository $advantageRepository, SerializerInterface $serializerInterface): JsonResponse
     {
-
         $advantages = $advantageRepository->findAll();
 
         $advantagesJson = $serializerInterface->serialize($advantages, 'json', ['groups' => 'advantages']);
@@ -53,7 +54,6 @@ class AdvantagesController extends AbstractController
     #[Route('/api/advantages/{id}', name: 'app_advantages_id', methods: ['GET'])]
     public function getAdvantagebyId(Advantage $advantage, SerializerInterface $serializerInterface): JsonResponse
     {
-
         $advantageById = $serializerInterface->serialize($advantage, 'json', ['groups' => 'advantages']);
 
         return new JsonResponse($advantageById, Response::HTTP_OK, ['accept' => 'json'], true);
@@ -82,7 +82,6 @@ class AdvantagesController extends AbstractController
     #[Route('/api/post/advantages', name: "app_advantages_post", methods: ['POST'])]
     public function createAdvantages(Request $request, serializerInterface $serializerInterface, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
     {
-
         $advantages = $serializerInterface->deserialize($request->getContent(), Advantage::class, 'json');
 
         // On vérifie les erreurs
@@ -125,7 +124,6 @@ class AdvantagesController extends AbstractController
     #[Route('/api/put/advantages/{id}', name: "app_advantages_put", methods: ['PUT'])]
     public function updateAdvantages(Request $request, Advantage $advantage,  serializerInterface $serializerInterface, EntityManagerInterface $entityManager, ValidatorInterface $validatorInterface): JsonResponse
     {
-
         $advantages = $serializerInterface->deserialize($request->getContent(), Advantage::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $advantage, 'ignored_attributes' => ['idAdvantage']]);
 
         // On vérifie les erreurs
@@ -159,7 +157,6 @@ class AdvantagesController extends AbstractController
     #[Route('/api/delete/advantages/{id}', name: 'delete_advantages', methods: ['DELETE'])]
     public function deleteAdvantages( Advantage $advantage, EntityManagerInterface $entityManager): Response
     {
-
         $entityManager->remove($advantage);
 
         $entityManager->flush();

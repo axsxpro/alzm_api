@@ -36,9 +36,6 @@ class PlanningRulesController extends AbstractController
 
         $planningsJson = $serializerInterface->serialize($planningsRules, 'json', ['groups' => 'planning']);
 
-        // le code retour : ici Response::HTTP_OK  correspond au code 200 . Ce code est celui renvoyé par défaut lorsque rien n’est précisé ;
-        // [] : les headers (qu’on laisse vides pour l’instant pour garder le comportement par défaut);
-        // un true qui signifie que nous avons DÉJÀ sérialisé les données et qu’il n’y a donc plus de traitement à faire dessus. 
         return new JsonResponse($planningsJson, Response::HTTP_OK, [], true);
     }
 
@@ -53,9 +50,9 @@ class PlanningRulesController extends AbstractController
      * @OA\Tag(name="Plannings")
      */
     #[Route('/api/plannings/{id}', name: 'planning_id', methods: ['GET'])]
-    public function getPlanningById(PlanningRules $planningRules, SerializerInterface $serializer): JsonResponse
+    public function getPlanningById(PlanningRules $planningRules, SerializerInterface $serializerInterface): JsonResponse
     {
-        $planningById = $serializer->serialize($planningRules, 'json', ['groups' => 'planning']);
+        $planningById = $serializerInterface->serialize($planningRules, 'json', ['groups' => 'planning']);
 
         return new JsonResponse($planningById, Response::HTTP_OK, ['accept' => 'json'], true);
     }
@@ -86,19 +83,16 @@ class PlanningRulesController extends AbstractController
      * @OA\Tag(name="Plannings")
      */
     #[Route('/api/post/coachs/{id}/plannings', name: "app_plannings_post", methods: ['POST'])]
-    public function createPlannings(int $id, Request $request, SerializerInterface $serializer, CoachRepository $coachRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function createPlannings(int $id, Request $request, SerializerInterface $serializerInterface, CoachRepository $coachRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
-        // $request->getContent(): récupère le contenu de la requête HTTP POST reçue.
-        // PlanningRules::class : C'est la classe cible dans laquelle on veut désérialiser les données JSON
-        // json :  indique au composant de sérialisation que le contenu de la requête est au format JSON
-        $planningRules = $serializer->deserialize($request->getContent(), PlanningRules::class, 'json');
 
+        $planningRules = $serializerInterface->deserialize($request->getContent(), PlanningRules::class, 'json');
 
         // On vérifie les erreurs
         $errors = $validatorInterface->validate($planningRules);
 
         if ($errors->count() > 0) {
-            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         // On cherche l' id du coach et on l'assigne à l'objet PlanningsRules.
@@ -109,7 +103,7 @@ class PlanningRulesController extends AbstractController
 
         $entityManager->flush();
 
-        $jsonPlanningRules = $serializer->serialize($planningRules, 'json', ['groups' => 'planning']);
+        $jsonPlanningRules = $serializerInterface->serialize($planningRules, 'json', ['groups' => 'planning']);
 
         // created = code 201
         return new JsonResponse($jsonPlanningRules, Response::HTTP_CREATED, [], true);
@@ -141,30 +135,29 @@ class PlanningRulesController extends AbstractController
      * @OA\Tag(name="Plannings")
      */
     #[Route('/api/put/coachs/{id}/plannings/{idPlanning}', name: "app_plannings_put", methods: ['PUT'])]
-    public function updatePlannings(int $id, int $idPlanning, Request $request, SerializerInterface $serializer, PlanningRulesRepository $planningRulesRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
+    public function updatePlannings(int $id, int $idPlanning, Request $request, SerializerInterface $serializerInterface, PlanningRulesRepository $planningRulesRepository, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
         $planningRules = $planningRulesRepository->findPlanningByCoachId($id, $idPlanning);
 
-        // Les données JSON de la requête sont transformées en un objet 
-        // [AbstractNormalizer::OBJECT_TO_POPULATE => $availability] :  permet de mettre à jour l'objet $availability existant avec les nouvelles données.
-        $updatePlanning = $serializer->deserialize($request->getContent(), PlanningRules::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $planningRules, 'ignored_attributes' => ['idPlanningRules', 'coach']]);
+        $updatePlanning = $serializerInterface->deserialize($request->getContent(), PlanningRules::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $planningRules, 'ignored_attributes' => ['idPlanningRules', 'coach']]);
 
 
         // On vérifie les erreurs
         $errors = $validatorInterface->validate($planningRules);
 
         if ($errors->count() > 0) {
-            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         $entityManager->persist($updatePlanning);
 
         $entityManager->flush();
 
-        $jsonUpdatedPlanning = $serializer->serialize($updatePlanning, 'json', ['groups' => 'planning']);
+        $jsonUpdatedPlanning = $serializerInterface->serialize($updatePlanning, 'json', ['groups' => 'planning']);
 
         // accepted = code 202
         return new JsonResponse($jsonUpdatedPlanning, JsonResponse::HTTP_ACCEPTED, [], true);
+        
     }
 
 

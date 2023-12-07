@@ -167,4 +167,6 @@ class TextController extends AbstractController
         return $this->redirectToRoute('app_text', [], Response::HTTP_SEE_OTHER, true);
         // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+
+
 }

@@ -33,15 +33,10 @@ class PatientController extends AbstractController
     #[Route('/api/patients', name: 'app_all_patient', methods: ['GET'])]
     public function getPatients(PatientRepository $patientRepository, SerializerInterface $serializerInterface): JsonResponse
     {
-
-        // afficher tous les utilisateurs de la base de données
         $patients = $patientRepository->findAll();
 
         $patientsJson = $serializerInterface->serialize($patients, 'json', ['groups' => 'patients']);
 
-        // le code retour : ici Response::HTTP_OK  correspond au code 200 . Ce code est celui renvoyé par défaut lorsque rien n’est précisé ;
-        // [] : les headers (qu’on laisse vides pour l’instant pour garder le comportement par défaut);
-        // un true qui signifie que nous avons DÉJÀ sérialisé les données et qu’il n’y a donc plus de traitement à faire dessus. 
         return new JsonResponse($patientsJson, Response::HTTP_OK, [], true);
     }
 
@@ -57,9 +52,9 @@ class PatientController extends AbstractController
      * @OA\Tag(name="Patients")
      */
     #[Route('/api/patients/{id}', name: 'patient_id', methods: ['GET'])]
-    public function getPatientById(Patient $patient, SerializerInterface $serializer): JsonResponse
+    public function getPatientById(Patient $patient, SerializerInterface $serializerInterface): JsonResponse
     {
-        $patientById = $serializer->serialize($patient, 'json', ['groups' => 'patients']);
+        $patientById = $serializerInterface->serialize($patient, 'json', ['groups' => 'patients']);
 
         return new JsonResponse($patientById, Response::HTTP_OK, ['accept' => 'json'], true);
     }

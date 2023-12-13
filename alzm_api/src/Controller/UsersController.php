@@ -47,18 +47,17 @@ class UsersController extends AbstractController
     // #[IsGranted("ROLE_ADMIN")] //  seuls les utilisateurs ayant le rôle "ROLE_ADMIN" auront la permission d'accéder à la ressource
     public function getUsers(AppUserRepository $AppUserRepository, SerializerInterface $serializerInterface): JsonResponse
     {
-
         // afficher tous les utilisateurs de la base de données
         $users = $AppUserRepository->findAll();
 
         // serialisation : convertir  des objets en chaine de caractères
         $usersJson = $serializerInterface->serialize($users, 'json');
 
-        // le code retour : Response::HTTP_OK :  correspond au code 200
-        // [] : les headers (qu’on laisse vides pour l’instant pour garder le comportement par défaut);
-        // true : indique que la réponse JSON doit être mise en forme en utilisant la mise en forme JSON "pretty"
+        // code 200
         return new JsonResponse($usersJson, Response::HTTP_OK, [], true);
+        
     }
+
 
     /**
      * Get users by id
@@ -304,7 +303,11 @@ class UsersController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER, true);
+        // code 303
+        // return $this->redirectToRoute('app_users', [], Response::HTTP_SEE_OTHER, true);
+        
+        // code 204
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
 

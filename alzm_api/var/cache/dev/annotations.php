@@ -142,6 +142,12 @@ return [[
 '[C]App%5CController%5CFilesController%23updateFiles' => 1,
 'App%5CController%5CFilesController%23deleteFiles' => 26,
 '[C]App%5CController%5CFilesController%23deleteFiles' => 1,
+'App%5CController%5CGoogleOAuthController' => 0,
+'[C]App%5CController%5CGoogleOAuthController' => 1,
+'App%5CController%5CGoogleOAuthController%23connectAction' => 0,
+'[C]App%5CController%5CGoogleOAuthController%23connectAction' => 1,
+'App%5CController%5CGoogleOAuthController%23connectCheckAction' => 0,
+'[C]App%5CController%5CGoogleOAuthController%23connectCheckAction' => 1,
 'App%5CController%5CHomePageController' => 0,
 '[C]App%5CController%5CHomePageController' => 1,
 'App%5CController%5CHomePageController%23index' => 0,
@@ -164,8 +170,8 @@ return [[
 '[C]App%5CController%5CPlanController%23createPlans' => 1,
 'App%5CController%5CPlanController%23updatePlans' => 32,
 '[C]App%5CController%5CPlanController%23updatePlans' => 1,
-'App%5CController%5CPlanController%23deleteCourses' => 33,
-'[C]App%5CController%5CPlanController%23deleteCourses' => 1,
+'App%5CController%5CPlanController%23deletePlans' => 33,
+'[C]App%5CController%5CPlanController%23deletePlans' => 1,
 'App%5CController%5CPlanningRulesController' => 0,
 '[C]App%5CController%5CPlanningRulesController' => 1,
 'App%5CController%5CPlanningRulesController%23getPlanningsRules' => 34,
@@ -184,8 +190,8 @@ return [[
 '[C]App%5CController%5CResourcesController%23getRessources' => 1,
 'App%5CController%5CResourcesController%23getResourcesById' => 38,
 '[C]App%5CController%5CResourcesController%23getResourcesById' => 1,
-'App%5CController%5CResourcesController%23createPlans' => 39,
-'[C]App%5CController%5CResourcesController%23createPlans' => 1,
+'App%5CController%5CResourcesController%23createResources' => 39,
+'[C]App%5CController%5CResourcesController%23createResources' => 1,
 'App%5CController%5CResourcesController%23updateResources' => 40,
 '[C]App%5CController%5CResourcesController%23updateResources' => 1,
 'App%5CController%5CResourcesController%23deleteResources' => 41,
@@ -1290,7 +1296,7 @@ return [[
 ], [
 
 0 => [],
-1 => 1701911333,
+1 => 1702393048,
 2 => static function () {
     return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
         $o = [

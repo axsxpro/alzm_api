@@ -178,6 +178,7 @@ class UsersControllerTest extends WebTestCase
         // récupération des données mises à jours dans le body de la response
         $responseData = json_decode($client->getResponse()->getContent(), true);
         $email = $responseData['email'];
+        
 
         // Nouvelle requête pour récupérer l'utilisateur depuis la base de données après la mise à jour
         $updatedUser = $entityManager->getRepository(AppUser::class)->find($user->getIdUser());

@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Availability;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -11,7 +12,6 @@ class AvailabilityControllerTest extends WebTestCase
 
     public function testGetAvailabilities()
     {
-
         $client = static::createClient();
 
         // Le client fait une requête HTTP GET vers l'endpoint '/api/availabilities'
@@ -28,6 +28,7 @@ class AvailabilityControllerTest extends WebTestCase
         foreach ($responseData as $availability) {
             $this->assertArrayHasKey('idAvailability', $availability);
         }
+    
     }
 
 
@@ -50,7 +51,7 @@ class AvailabilityControllerTest extends WebTestCase
         foreach ($responseData as $availability) {
             
             // récupération de la valeur de idUser
-            $idUser = $availability['coach']['coachInformation']['idUser'];;
+            $idUser = $availability['coach']['coachInformation']['idUser'];
 
             // Comparer la valeur de 'idUser' avec $idCoach afin de vérifier si on a récupérer l'availability du bon coach
             $this->assertEquals($idUser, $idCoach);
@@ -71,8 +72,10 @@ class AvailabilityControllerTest extends WebTestCase
 
         $jsonData = json_encode($availabilityData);
 
+        $idCoach = 24;
+
         // Exécuter une requête POST vers l'endpoint '/api/post/coachs/{id}/availabilities'
-        $client->request('POST', '/api/post/coachs/1/availabilities', [], [], ['CONTENT_TYPE' => 'application/json'], $jsonData);
+        $client->request('POST', "/api/post/coachs/$idCoach/availabilities", [], [], ['CONTENT_TYPE' => 'application/json'], $jsonData);
 
         // Vérifier que la réponse a un code HTTP 201 (Created)
         $this->assertEquals(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
@@ -80,13 +83,68 @@ class AvailabilityControllerTest extends WebTestCase
 
         $this->assertJson($client->getResponse()->getContent());
 
-        // Convertir la réponse JSON en tableau associatif
+
         $responseData = json_decode($client->getResponse()->getContent(), true);
 
+        // Vérifier que les données correspondent à celle envoyée dans la requête
+        $this->assertEquals($availabilityData['dateAvailability'], $responseData['dateAvailability']);
+        $this->assertEquals($availabilityData['hourStartSlot'], $responseData['hourStartSlot']);
+        $this->assertEquals($availabilityData['hourEndSlot'], $responseData['hourEndSlot']);
+        $this->assertEquals($idCoach, $responseData['coach']['coachInformation']['idUser']);
+
+    }
+
+
+    public function testUpdateAvailabilities()
+    {
+
+        $client = static::createClient();
+
+        // Données JSON à envoyer dans la requête PUT
+        $availabilityData = [
+            'dateAvailability' => '2023-12-23T10:00:00+00:00',
+        ];
+
+        $jsonData = json_encode($availabilityData);
+
+        $idCoach = 24;
+        $idAvailability = 14;
+
+        // Exécuter une requête PUT vers l'endpoint /api/put/coachs/$idCoach/availabilities/$idAvailability
+        $client->request('PUT', "/api/put/coachs/$idCoach/availabilities/$idAvailability", [], [], ['CONTENT_TYPE' => 'application/json'], $jsonData);
+
+        // Vérifier que la réponse a un code HTTP 202 (Accepted)
+        $this->assertEquals(Response::HTTP_ACCEPTED, $client->getResponse()->getStatusCode());
+
+        $this->assertJson($client->getResponse()->getContent());
+
+        $responseData = json_decode($client->getResponse()->getContent(), true);
 
         // Vérifier que la date de disponibilité correspond à celle envoyée dans la requête
         $this->assertEquals($availabilityData['dateAvailability'], $responseData['dateAvailability']);
 
+    }
+
+
+    public function testDeleteAvailabilities()
+    {
+        $client = static::createClient();
+
+        $idCoach = 24;
+        $idAvailability = 15;
+
+        // Exécuter une requête DELETE vers l'endpoint
+        $client->request('DELETE', "/api/delete/coachs/$idCoach/availabilities/$idAvailability");
+
+        
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $client->getResponse()->getStatusCode());
+
+
+        // Vérifier la supression de l'availability dans la base de données
+        $entityManager = $client->getContainer()->get('doctrine.orm.entity_manager');
+        $availabilityRepository = $entityManager->getRepository(Availability::class);
+        $deletedAvailability = $availabilityRepository->find($idAvailability);
+        $this->assertNull($deletedAvailability);
 
     }
 

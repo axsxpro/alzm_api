@@ -90,7 +90,7 @@ class PlanningRules
      * })
      * @Groups({"planning"})
      * @SerializedName("coach")
-     * @Assert\NotBlank(message="Field idUser cannot be blank")
+     * 
      */
     private $idUser;
 

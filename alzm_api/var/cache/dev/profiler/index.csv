@@ -626,3 +626,8 @@ dda96d,172.18.0.1,GET,http://localhost:8081/favicon.ico,1702486485,c91f0d,404
 c91f0d,172.18.0.1,GET,http://localhost:8081/favicon.ico,1702486485,,404
 14f8c0,172.18.0.1,GET,http://localhost:8081/api/availabilities,1702486637,,200
 56643f,172.18.0.1,GET,http://localhost:8081/api/doc,1702487854,,200
+589af4,172.18.0.1,GET,http://localhost:8081/api/plannings,1702558299,,200
+2b2819,172.18.0.1,POST,http://localhost:8081/api/post/coachs/24/plannings,1702564960,,400
+d0e117,172.18.0.1,GET,http://localhost:8081/api/doc,1702565335,,200
+fc6930,172.18.0.1,POST,http://localhost:8081/api/post/coachs/24/plannings,1702566331,,201
+ef9408,172.18.0.1,GET,http://localhost:8081/api/courses,1702577028,,200

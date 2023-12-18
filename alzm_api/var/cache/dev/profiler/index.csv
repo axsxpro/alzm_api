@@ -631,3 +631,13 @@ c91f0d,172.18.0.1,GET,http://localhost:8081/favicon.ico,1702486485,,404
 d0e117,172.18.0.1,GET,http://localhost:8081/api/doc,1702565335,,200
 fc6930,172.18.0.1,POST,http://localhost:8081/api/post/coachs/24/plannings,1702566331,,201
 ef9408,172.18.0.1,GET,http://localhost:8081/api/courses,1702577028,,200
+ba758f,172.18.0.1,POST,http://localhost:8081/api/post/courses,1702656733,,201
+30d608,172.18.0.1,GET,http://localhost:8081/api/appointment,1702661889,e4a042,404
+e4a042,172.18.0.1,GET,http://localhost:8081/api/appointment,1702661889,,404
+e87e34,172.18.0.1,GET,http://localhost:8081/api/appointments,1702662404,,200
+b5d7ee,172.18.0.1,POST,http://localhost:8081/api/post/appointments,1702897008,,400
+cad35e,172.18.0.1,GET,http://localhost:8081/api/post/appointments,1702897185,bdb91a,500
+bdb91a,172.18.0.1,POST,http://localhost:8081/api/post/appointments,1702897185,,500
+65d732,172.18.0.1,POST,http://localhost:8081/api/post/appointments,1702897660,,201
+236736,172.18.0.1,GET,http://localhost:8081/api/appointments,1702899333,,200
+bc5c2d,172.18.0.1,GET,http://localhost:8081/api/appointments,1702899705,,200

@@ -182,7 +182,9 @@ class CourseController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_courses', [], Response::HTTP_SEE_OTHER, true);
-        // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        // return $this->redirectToRoute('app_courses', [], Response::HTTP_SEE_OTHER, true);
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+
+    
 }

@@ -103,13 +103,6 @@ class AppointmentController extends AbstractController
 
         $appointments = $serializerInterface->deserialize($request->getContent(), Appointment::class, 'json');
 
-        // On vérifie les erreurs
-        $errors = $validatorInterface->validate($appointments);
-
-        if ($errors->count() > 0) {
-            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
-        }
-
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
 
@@ -123,6 +116,13 @@ class AppointmentController extends AbstractController
         $appointments->setIdCoach($coachRepository->find($idCoach));
         $appointments->setIdPatient($patientRepository->find($idPatient));
         $appointments->setIdSchedule($scheduleRepository->find($idSchedule));
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($appointments);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         // persistance des données dans la BDD
         $entityManager->persist($appointments);
@@ -169,14 +169,6 @@ class AppointmentController extends AbstractController
 
         $updateAppointment = $serializerInterface->deserialize($request->getContent(), Appointment::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $appointment, 'ignored_attributes' => ['idApppointment', 'coach']]);
 
-
-        // On vérifie les erreurs
-        $errors = $validatorInterface->validate($appointment);
-
-        if ($errors->count() > 0) {
-            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
-        }
-
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
 
@@ -189,6 +181,12 @@ class AppointmentController extends AbstractController
         $updateAppointment->setIdPatient($patientRepository->find($idPatient));
         $updateAppointment->setIdSchedule($scheduleRepository->find($idSchedule));
 
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($appointment);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
 
         $entityManager->persist($updateAppointment);
 

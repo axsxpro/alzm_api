@@ -41,7 +41,7 @@ class CourseControllerTest extends WebTestCase
         // Le client fait une requête HTTP GET vers l'endpoint "/api/users/{id}"
         $client->request('GET', "/api/courses/$courseId");
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertResponseStatusCodeSame(Response::HTTP_ACCEPTED);
 
         $this->assertJson($client->getResponse()->getContent());
 

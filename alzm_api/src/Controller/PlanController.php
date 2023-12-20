@@ -106,13 +106,6 @@ class PlanController extends AbstractController
 
         $plan = $serializerInterface->deserialize($request->getContent(), Plan::class, 'json');
 
-        // On vérifie les erreurs
-        $errors = $validatorInterface->validate($plan);
-
-        if ($errors->count() > 0) {
-            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
-        }
-
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
 
@@ -142,6 +135,14 @@ class PlanController extends AbstractController
             $idResource = $resource['idResources'];
 
             $plan->addIdResource($resourcesRepository->find($idResource));
+        }
+
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($plan);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         $entityManager->persist($plan);
@@ -197,13 +198,6 @@ class PlanController extends AbstractController
 
         $plan = $serializerInterface->deserialize($request->getContent(), Plan::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $plan, 'ignored_attributes' => ['idPlan']]);
 
-        // On vérifie les erreurs
-        $errors = $validatorInterface->validate($plan);
-
-        if ($errors->count() > 0) {
-            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
-        }
-
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
 
@@ -212,6 +206,9 @@ class PlanController extends AbstractController
 
             // Récupération de la liste des avantages dans le tableau 'advantages'
             $advantages = $content['advantages'];
+
+            // Supprimer les avantages existants pour éventuellement les remplacer par d'autres avantages
+            $plan->getIdAdvantage()->clear();
 
             // Pour chaque avantages
             foreach ($advantages as $advantage) {
@@ -235,6 +232,9 @@ class PlanController extends AbstractController
             // Récupération de la liste des ressources dans le tableau 'ressources'
             $resources = $content['resources'];
 
+            // Supprimer les resources existants pour éventuellement les remplacer par d'autres resources
+            $plan->getIdResources()->clear();
+
             foreach ($resources as $resource) {
 
                 $idResource = $resource['idResources'];
@@ -243,12 +243,19 @@ class PlanController extends AbstractController
             }
         }
 
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($plan);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
+
         $entityManager->persist($plan);
         $entityManager->flush();
 
         $jsonPlan = $serializerInterface->serialize($plan, 'json', ['groups' => 'plans']);
 
-        return new JsonResponse($jsonPlan, JsonResponse::HTTP_ACCEPTED, [], true);
+        return new JsonResponse($jsonPlan, Response::HTTP_ACCEPTED, [], true);
     }
 
 
@@ -269,8 +276,7 @@ class PlanController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_plans', [], Response::HTTP_SEE_OTHER, true);
-        // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        // return $this->redirectToRoute('app_plans', [], Response::HTTP_SEE_OTHER, true);
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-
 }

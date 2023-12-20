@@ -177,8 +177,8 @@ class ScheduleController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_schedules', [], Response::HTTP_SEE_OTHER, true);
-        // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        // return $this->redirectToRoute('app_schedules', [], Response::HTTP_SEE_OTHER, true);
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
     
 }

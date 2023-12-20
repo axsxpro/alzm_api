@@ -55,42 +55,42 @@ class AppointmentControllerTest extends WebTestCase
     }
 
 
-    // public function testCreateAppointments()
-    // {
-    //     $client = static::createClient();
+    public function testCreateAppointments()
+    {
+        $client = static::createClient();
 
-    //     $appointmentData = [
-    //         'coach' => [
-    //             'coachInformation' => [
-    //                 'idUser' => 25, 
-    //             ],
-    //         ],
-    //         'patient' => [
-    //             'patientInformation' => [
-    //                 'idUser' => 19, 
-    //             ],
-    //         ],
-    //         'schedule' => [
-    //             'idSchedule' => 10, 
-    //         ],
-    //     ];
+        $appointmentData = [
+            'coach' => [
+                'coachInformation' => [
+                    'idUser' => 25, 
+                ],
+            ],
+            'patient' => [
+                'patientInformation' => [
+                    'idUser' => 19, 
+                ],
+            ],
+            'schedule' => [
+                'idSchedule' => 10, 
+            ],
+        ];
 
-    //     $jsonData = json_encode($appointmentData);
+        $jsonData = json_encode($appointmentData);
 
-    //     $client->request('POST', '/api/post/appointments', [], [], ['CONTENT_TYPE' => 'application/json'], $jsonData);
+        $client->request('POST', '/api/post/appointments', [], [], ['CONTENT_TYPE' => 'application/json'], $jsonData);
 
-    //     $this->assertEquals(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
 
-    //     $this->assertJson($client->getResponse()->getContent());
+        $this->assertJson($client->getResponse()->getContent());
 
-    //     // Convertir la réponse JSON en tableau associatif
-    //     $responseData = json_decode($client->getResponse()->getContent(), true);
+        // Convertir la réponse JSON en tableau associatif
+        $responseData = json_decode($client->getResponse()->getContent(), true);
 
-    //     // Vérifier que les données correspondent à celles envoyées dans la requête
-    //     $this->assertEquals($appointmentData['coach']['coachInformation']['idUser'], $responseData['coach']['coachInformation']['idUser']);
-    //     $this->assertEquals($appointmentData['patient']['patientInformation']['idUser'], $responseData['patient']['patientInformation']['idUser']);
-    //     $this->assertEquals($appointmentData['schedule']['idSchedule'], $responseData['schedule']['idSchedule']);
-    // }
+        // Vérifier que les données correspondent à celles envoyées dans la requête
+        $this->assertEquals($appointmentData['coach']['coachInformation']['idUser'], $responseData['coach']['coachInformation']['idUser']);
+        $this->assertEquals($appointmentData['patient']['patientInformation']['idUser'], $responseData['patient']['patientInformation']['idUser']);
+        $this->assertEquals($appointmentData['schedule']['idSchedule'], $responseData['schedule']['idSchedule']);
+    }
 
 
     public function testUpdateAppointment()

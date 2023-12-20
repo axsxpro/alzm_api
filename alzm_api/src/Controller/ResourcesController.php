@@ -91,12 +91,6 @@ class ResourcesController extends AbstractController
 
         $resource = $serializerInterface->deserialize($request->getContent(), Resources::class, 'json');
 
-        // On vérifie les erreurs
-        $errors = $validatorInterface->validate($resource);
-
-        if ($errors->count() > 0) {
-            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
-        }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
@@ -128,6 +122,13 @@ class ResourcesController extends AbstractController
             $idFile = $file['idFiles'];
 
             $resource->addIdFile($filesRepository->find($idFile));
+        }
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($resource);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         $entityManager->persist($resource);
@@ -167,21 +168,17 @@ class ResourcesController extends AbstractController
     #[Route('/api/put/resources/{id}', name: "app_resources_put", methods: ['PUT'])]
     public function updateResources(Request $request, Resources $resources, FilesRepository $filesRepository, TextRepository $textRepository, serializerInterface $serializerInterface, ValidatorInterface $validatorInterface, EntityManagerInterface $entityManager): JsonResponse
     {
-
         $resource = $serializerInterface->deserialize($request->getContent(), Resources::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $resources, 'ignored_attributes' => ['idResources']]);
-
-        // On vérifie les erreurs
-        $errors = $validatorInterface->validate($resource);
-
-        if ($errors->count() > 0) {
-            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
-        }
 
         // Récupération de l'ensemble des données envoyées sous forme de tableau
         $content = $request->toArray();
 
         // Récupération de la liste des texts dans le tableau 'text'
         $texts = $content['text'];
+
+        // Supprimer les textes existants pour éventuellement les remplacer par d'autres texts
+        // va récupérer le tableau 'idText' (nommé text) et effacer le contenu à l'intérieur
+        $resource->getIdText()->clear();
 
         // Pour chaque texts
         foreach ($texts as $text) {
@@ -199,14 +196,25 @@ class ResourcesController extends AbstractController
             }
         }
 
+
         // Récupération de la liste des files dans le tableau 'files'
         $files = $content['files'];
+
+        // Supprimer les files existants pour éventuellement les remplacer par d'autres files
+        $resource->getIdFiles()->clear();
 
         foreach ($files as $file) {
 
             $idFile = $file['idFiles'];
 
             $resource->addIdFile($filesRepository->find($idFile));
+        }
+
+        // On vérifie les erreurs
+        $errors = $validatorInterface->validate($resource);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializerInterface->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
         }
 
         $entityManager->persist($resource);
@@ -236,9 +244,7 @@ class ResourcesController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_resources', [], Response::HTTP_SEE_OTHER, true);
-        // return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        // return $this->redirectToRoute('app_resources', [], Response::HTTP_SEE_OTHER, true);
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
-
-
 }

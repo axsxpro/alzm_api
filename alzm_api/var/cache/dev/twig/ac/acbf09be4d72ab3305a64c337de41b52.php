@@ -133,6 +133,6 @@ class __TwigTemplate_43a6ea7daa5e0c78f3f566e9c49455f9 extends Template
 
     <a href=\"{{ path('app_user_index') }}\">back to list</a>
 {% endblock %}
-", "app_user/new.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_docker\\alzm_api\\templates\\app_user\\new.html.twig");
+", "app_user/new.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_api\\alzm_api\\templates\\app_user\\new.html.twig");
     }
 }

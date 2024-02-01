@@ -222,6 +222,6 @@ class __TwigTemplate_8f1bbdc5006b64aa7483add68ecafc16 extends Template
         {% block body '' %}
     </body>
 </html>
-", "@WebProfiler/Profiler/base.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_docker\\alzm_api\\vendor\\symfony\\web-profiler-bundle\\Resources\\views\\Profiler\\base.html.twig");
+", "@WebProfiler/Profiler/base.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_api\\alzm_api\\vendor\\symfony\\web-profiler-bundle\\Resources\\views\\Profiler\\base.html.twig");
     }
 }

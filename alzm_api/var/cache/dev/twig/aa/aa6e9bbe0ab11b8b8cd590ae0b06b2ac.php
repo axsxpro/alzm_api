@@ -122,6 +122,6 @@ class __TwigTemplate_19ce819f3679efc814db1d3453760ad9 extends Template
         {% endfor %}
     </tbody>
 </table>
-", "@WebProfiler/Profiler/table.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_docker\\alzm_api\\vendor\\symfony\\web-profiler-bundle\\Resources\\views\\Profiler\\table.html.twig");
+", "@WebProfiler/Profiler/table.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_api\\alzm_api\\vendor\\symfony\\web-profiler-bundle\\Resources\\views\\Profiler\\table.html.twig");
     }
 }

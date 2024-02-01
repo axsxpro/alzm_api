@@ -481,6 +481,6 @@ file that was distributed with this source code. #}
     {% endblock swagger_initialization %}
 </body>
 </html>
-", "@NelmioApiDoc/SwaggerUi/index.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_docker\\alzm_api\\vendor\\nelmio\\api-doc-bundle\\Resources\\views\\SwaggerUi\\index.html.twig");
+", "@NelmioApiDoc/SwaggerUi/index.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_api\\alzm_api\\vendor\\nelmio\\api-doc-bundle\\Resources\\views\\SwaggerUi\\index.html.twig");
     }
 }

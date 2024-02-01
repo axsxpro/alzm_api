@@ -84,6 +84,6 @@ class __TwigTemplate_c714fcadc14a67aab327c835a4fc512c extends Template
     {{ form_widget(form) }}
     <button class=\"btn\">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
-", "app_user/_form.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_docker\\alzm_api\\templates\\app_user\\_form.html.twig");
+", "app_user/_form.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_api\\alzm_api\\templates\\app_user\\_form.html.twig");
     }
 }

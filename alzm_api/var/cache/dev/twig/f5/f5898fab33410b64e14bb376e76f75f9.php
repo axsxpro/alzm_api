@@ -249,6 +249,6 @@ class __TwigTemplate_cde26f8369eb80d180a9b1eafa168eaf extends Template
 
     {{ include('app_user/_delete_form.html.twig') }}
 {% endblock %}
-", "app_user/show.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_docker\\alzm_api\\templates\\app_user\\show.html.twig");
+", "app_user/show.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_api\\alzm_api\\templates\\app_user\\show.html.twig");
     }
 }

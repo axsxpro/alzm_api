@@ -254,6 +254,6 @@ class __TwigTemplate_0a12e3a48e8c7a113d6989e2a2dfc751 extends Template
 
     <a href=\"{{ path('app_user_new') }}\">Create new</a>
 {% endblock %}
-", "app_user/index.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_docker\\alzm_api\\templates\\app_user\\index.html.twig");
+", "app_user/index.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_api\\alzm_api\\templates\\app_user\\index.html.twig");
     }
 }

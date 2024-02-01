@@ -79,6 +79,6 @@ class __TwigTemplate_42f60b266e4110e16b6eb44e02e4512f extends Template
     <input type=\"hidden\" name=\"_token\" value=\"{{ csrf_token('delete' ~ app_user.idUser) }}\">
     <button class=\"btn\">Delete</button>
 </form>
-", "app_user/_delete_form.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_docker\\alzm_api\\templates\\app_user\\_delete_form.html.twig");
+", "app_user/_delete_form.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_api\\alzm_api\\templates\\app_user\\_delete_form.html.twig");
     }
 }

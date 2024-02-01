@@ -154,6 +154,6 @@ class __TwigTemplate_d659e241608e70cb0857efb4cc25d7ed extends Template
     </ul>
 </div>
 {% endblock %}
-", "all_coach/index.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_docker\\alzm_api\\templates\\all_coach\\index.html.twig");
+", "all_coach/index.html.twig", "C:\\Users\\cmptp\\Desktop\\alzm_api\\alzm_api\\templates\\all_coach\\index.html.twig");
     }
 }

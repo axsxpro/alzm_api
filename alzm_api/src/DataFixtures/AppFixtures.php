@@ -165,6 +165,7 @@ class AppFixtures extends Fixture
 
         // creation du planning
         foreach ($coaches as $coach) {
+
             $rules = new PlanningRules();
             // Configurez les règles du planning
             $rules->setMinimalTimeSlot(\DateTime::createFromFormat('H:i', '08:00'));
@@ -248,6 +249,7 @@ class AppFixtures extends Fixture
 
                     $manager->persist($avantage);
                 }
+                
             } elseif ($plan->getName() === 'freemium') {
 
                 foreach ($avantagesFreemium as $avantageFreemium) {

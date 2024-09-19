@@ -109,7 +109,6 @@ class UsersController extends AbstractController
      *     response=201,
      *     description="Created",
      * )
-     * 
      * @OA\RequestBody(
      *     required=true,
      *     @OA\JsonContent(
@@ -122,7 +121,6 @@ class UsersController extends AbstractController
      *         @OA\Property(property="password", type="string"),
      *     )
      * ),
-     * 
      * @OA\Tag(name="Users")
      */
     #[Route('/api/post/users', name: "app_users_post", methods: ['POST'])]

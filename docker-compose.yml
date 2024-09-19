@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Service pour l'application Symfony
   app:
@@ -7,52 +5,47 @@ services:
     container_name: alzmi_app
     ports:
       - "8081:80"
-
-    # depends_on:
-    #   - database
+    depends_on:
+      - database
     networks:
       - dev
     volumes:
       - ./php/vhosts:/etc/apache2/sites-enabled
       - ./:/var/www
-    restart: always
     environment:
       - DATABASE_URL=postgresql://postgres:postgresql16@192.168.1.15:5432/alzmdb?serverVersion=16&charset=utf8
-      # - DATABASE_URL=postgresql://postgres:postgresql16@172.16.2.194:5432/alzmdb?serverVersion=16&charset=utf8
-      # - DATABASE_URL=postgresql://postgres:postgresql16@10.6.2.20:5432/alzmdb?serverVersion=16&charset=utf8
+      
 
-#   # Service de base de données PostgreSQL
-#   database:
-#     image: postgres:16-alpine
-#     container_name: database_postgresql
-#     restart: always
-#     environment:
-#         POSTGRES_DB: alzmdb
-#         POSTGRES_PASSWORD: northcreation59
-#         POSTGRES_USER: northcreation
-#     volumes:
-#       - database_data:/var/lib/postgresql/data
-#     networks:
-#       - dev
-#     ports:
-#       - "5433:5433"  
+  # Service de base de données PostgreSQL
+  database:
+     image: postgres:16-alpine
+     container_name: database_postgresql
+     environment:
+         POSTGRES_DB: alzmdb
+         POSTGRES_PASSWORD: northcreation59
+         POSTGRES_USER: northcreation
+     volumes:
+       - database_data:/var/lib/postgresql/data
+     networks:
+       - dev
 
-#   # Service pgAdmin4
-#   pgadmin:
-#     image: dpage/pgadmin4
-#     container_name: pgadmin_container
-#     environment:
-#       PGADMIN_DEFAULT_EMAIL: alissasayarath@gmail.com
-#       PGADMIN_DEFAULT_PASSWORD: northcreation59
-#     ports:
-#       - "5051:80"  
-#     networks:
-#       - dev
+
+  # Service pgAdmin4
+  pgadmin:
+     image: dpage/pgadmin4
+     container_name: pgadmin_container
+     environment:
+       PGADMIN_DEFAULT_EMAIL: northcreation@gmail.com
+       PGADMIN_DEFAULT_PASSWORD: northcreation59
+     ports:
+       - "5051:80"  
+     networks:
+       - dev
 
 networks:
   dev:
 
-# volumes:
-#   database_data:
+volumes:
+  database_data:
 
 

@@ -212,7 +212,7 @@ class AppFixtures extends Fixture
 
             // à revoir car les patients auronts 2 plans à chaque tour de boucle
             foreach ($patients as $patient) {
-                // Associer le pplan au patient
+                // Associer le plan au patient
                 $plan->addIdUser($patient);
             }
 

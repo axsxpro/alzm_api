@@ -1,4 +1,5 @@
 services:
+
   # Service pour l'application Symfony
   app:
     build: php
@@ -13,7 +14,7 @@ services:
       - ./php/vhosts:/etc/apache2/sites-enabled
       - ./:/var/www
     environment:
-      - DATABASE_URL=postgresql://postgres:postgresql16@192.168.1.15:5432/alzmdb?serverVersion=16&charset=utf8
+      - DATABASE_URL=postgresql://postgres:postgresql16@localhost:5432/alzmdb?serverVersion=16&charset=utf8
       
 
   # Service de base de données PostgreSQL

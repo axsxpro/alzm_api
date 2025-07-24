@@ -182,7 +182,6 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
     /**
      * A visual identifier that represents this user.
      *
@@ -211,8 +210,6 @@ class AppUser implements UserInterface, PasswordAuthenticatedUserInterface
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
-
-        // return $this->roles;
     }
 
     public function setRoles(array $roles): static

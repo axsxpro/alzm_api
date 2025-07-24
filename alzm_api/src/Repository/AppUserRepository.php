@@ -50,7 +50,5 @@ class AppUserRepository extends ServiceEntityRepository implements PasswordUpgra
             ->setParameter('id', $id)  // Lie la valeur de $id au paramètre :id('id')
             ->getQuery() // Obtient l'objet de requête
             ->getSingleScalarResult(); // Exécute la requête et récupère un seul résultat scalaire (l'ID)
-    }    
-
-
+    }
 }

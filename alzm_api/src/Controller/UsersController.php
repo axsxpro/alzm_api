@@ -29,7 +29,6 @@ use OpenApi\Annotations as OA;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
-
 class UsersController extends AbstractController
 {
 
@@ -40,22 +39,21 @@ class UsersController extends AbstractController
      *     response=200,
      *     description="OK",
      * )
-     * 
+     *
      * @OA\Tag(name="Users")
      */
     #[Route('/api/users', name: 'app_users', methods: ['GET'])]
     // #[IsGranted("ROLE_ADMIN")] //  seuls les utilisateurs ayant le rôle "ROLE_ADMIN" auront la permission d'accéder à la ressource
-    public function getUsers(AppUserRepository $AppUserRepository, SerializerInterface $serializerInterface): JsonResponse
+    public function getUsers(AppUserRepository $appUserRepository, SerializerInterface $serializerInterface): JsonResponse
     {
         // afficher tous les utilisateurs de la base de données
-        $users = $AppUserRepository->findAll();
+        $users = $appUserRepository->findAll();
 
-        // serialisation : convertir  des objets en chaine de caractères
+        // serialisation : convertir des objets en chaine de caractères
         $usersJson = $serializerInterface->serialize($users, 'json');
 
         // code 200
         return new JsonResponse($usersJson, Response::HTTP_OK, [], true);
-        
     }
 
 
@@ -66,7 +64,7 @@ class UsersController extends AbstractController
      *     response=200,
      *     description="OK",
      * )
-     * 
+     *
      * @OA\Tag(name="Users")
      */
     #[Route('/api/users/{id}', name: 'users_id', methods: ['GET'])]
